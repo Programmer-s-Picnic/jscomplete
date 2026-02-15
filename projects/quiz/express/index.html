@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="theme-color" content="#d97706"/><title>Quiz (Express)</title>
+<style>
+:root{--bg0:#fff7e6;--bg1:#fff1d6;--card:rgba(255,255,255,.9);--ink:#1f2937;--muted:#6b7280;--brand:#d97706;--border:rgba(31,41,55,.14);--shadow:0 12px 30px rgba(17,24,39,.1)}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui;background:linear-gradient(180deg,var(--bg0),var(--bg1));color:var(--ink);padding:16px}
+.wrap{max-width:860px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow);padding:14px}
+h1{margin:0 0 6px} .sub{margin:0 0 12px;color:var(--muted);font-weight:650}
+.q{border:1px solid var(--border);background:rgba(255,255,255,.75);border-radius:18px;padding:12px}
+.opt{display:flex;gap:10px;align-items:center;border:1px solid rgba(31,41,55,.12);background:rgba(255,255,255,.85);border-radius:16px;padding:10px 12px;margin-top:10px;cursor:pointer}
+.opt input{transform:scale(1.1)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-top:12px}
+button{border:1px solid var(--border);background:white;border-radius:14px;padding:10px 12px;font-weight:950;cursor:pointer}
+button.primary{background:linear-gradient(135deg, rgba(217,119,6,.12), rgba(245,158,11,.16));border-color:rgba(217,119,6,.35)}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;border:1px solid rgba(217,119,6,.25);background:rgba(255,255,255,.7);font-weight:900;color:#92400e}
+.msg{margin-top:10px;color:var(--muted);font-weight:750}
+</style></head><body>
+<div class="wrap"><div class="card">
+<div class="pill">⚡ Express Edition</div>
+<h1>🧠 Quiz App</h1>
+<p class="sub">3 questions. Pick an option and go next.</p>
+<div class="q">
+  <div class="pill">Question <span id="n">1</span>/3</div>
+  <h2 id="question" style="margin:10px 0 0;font-size:18px"></h2>
+  <div id="options"></div>
+  <div class="row">
+    <button id="prev">‹ Prev</button>
+    <button class="primary" id="next">Next ›</button>
+    <span class="pill">Score: <span id="score">0</span></span>
+  </div>
+  <div class="msg" id="msg"></div>
+</div>
+</div></div>
+<script>
+const Q=[
+  {q:"Which keyword creates a block-scoped variable?", a:["var","let","function","class"], c:1},
+  {q:"Which method selects the first matching element?", a:["getElementById","querySelector","querySelectorAll","getElementsByClassName"], c:1},
+  {q:"Which is a truthy value?", a:["0","''","null","[]"], c:3},
+];
+const $=(id)=>document.getElementById(id);
+let i=0, ans=Array(Q.length).fill(null), score=0;
+function render(){
+  $("n").textContent=i+1;
+  $("question").textContent=Q[i].q;
+  $("options").innerHTML=Q[i].a.map((t,idx)=>{
+    const checked=ans[i]===idx?"checked":"";
+    return `<label class="opt"><input type="radio" name="opt" value="${idx}" ${checked}/> <b>${esc(t)}</b></label>`;
+  }).join("");
+  $("prev").disabled=i===0;
+  $("next").textContent=i===Q.length-1?"Finish":"Next ›";
+  $("score").textContent=score;
+  $("msg").textContent="";
+}
+function recalc(){score=ans.reduce((s,v,idx)=>s+(v===Q[idx].c?1:0),0);}
+$("options").addEventListener("change",(e)=>{
+  const r=e.target.closest('input[type="radio"]'); if(!r) return;
+  ans[i]=Number(r.value); recalc(); $("score").textContent=score;
+});
+$("prev").addEventListener("click",()=>{if(i>0){i--;render();}});
+$("next").addEventListener("click",()=>{
+  if(ans[i]==null){$("msg").textContent="Please select an option.";return;}
+  if(i<Q.length-1){i++;render();}
+  else{
+    $("msg").innerHTML=`Finished ✅ Your score: <b>${score}/${Q.length}</b>. <button id="retry" class="primary" style="margin-left:10px">Retry</button>`;
+    document.getElementById("retry").addEventListener("click",()=>{i=0;ans=Array(Q.length).fill(null);score=0;render();});
+  }
+});
+function esc(s){return String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");}
+render();
+</script></body></html>

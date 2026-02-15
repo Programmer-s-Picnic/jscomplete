@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#d97706" />
+    <title>JavaScript Projects Showcase</title>
+    <meta
+      name="description"
+      content="Interactive index linking to Express and Full project editions. Data loaded from JSON."
+    />
+    <link rel="stylesheet" href="assets/css/base.css" />
+    <style>
+      .toggle {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 999px;
+        padding: 6px;
+      }
+      .chip {
+        border: 0;
+        cursor: pointer;
+        padding: 8px 10px;
+        border-radius: 999px;
+        font-weight: 1000;
+        background: transparent;
+        color: var(--muted);
+      }
+      .chip.active {
+        background: linear-gradient(
+          135deg,
+          rgba(217, 119, 6, 0.12),
+          rgba(245, 158, 11, 0.16)
+        );
+        color: #92400e;
+        outline: 1px solid rgba(217, 119, 6, 0.25);
+      }
+      .toast {
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 16px;
+        z-index: 50;
+        background: rgba(17, 24, 39, 0.92);
+        color: white;
+        padding: 10px 12px;
+        border-radius: 14px;
+        box-shadow: var(--shadow);
+        opacity: 0;
+        pointer-events: none;
+        transition:
+          opacity 0.18s ease,
+          transform 0.18s ease;
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-4px);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <section class="top">
+        <div class="spread">
+          <div>
+            <div class="pill">🟠 Programmer’s Picnic</div>
+            <h1 id="pageTitle">JavaScript Projects Showcase</h1>
+            <p class="sub">
+              Explore projects. Each project has <b>⚡ Express</b> and
+              <b>🏆 Full</b> editions. Data is loaded from
+              <span class="kbd">data/slides.json</span>.
+            </p>
+          </div>
+          <div class="row">
+            <button class="btn primary" id="btnStart" type="button">
+              🚀 Start Learning
+            </button>
+            <button class="btn" id="btnCopySite" type="button">
+              🔗 Copy Site Link
+            </button>
+          </div>
+        </div>
+
+        <div class="spread" style="margin-top: 12px">
+          <div class="row" style="flex: 1; min-width: 240px">
+            <input
+              class="input"
+              id="q"
+              placeholder="Search projects (todo, quiz, dom...)"
+            />
+            <select
+              class="input"
+              id="tagSelect"
+              style="min-width: 180px"
+            ></select>
+            <button class="btn" id="btnReset" type="button">↺ Reset</button>
+          </div>
+
+          <div class="row">
+            <div class="toggle" role="tablist" aria-label="Edition toggle">
+              <button
+                class="chip active"
+                id="chipExpress"
+                type="button"
+                role="tab"
+                aria-selected="true"
+              >
+                ⚡ Express
+              </button>
+              <button
+                class="chip"
+                id="chipFull"
+                type="button"
+                role="tab"
+                aria-selected="false"
+              >
+                🏆 Full
+              </button>
+            </div>
+            <span class="pill">Showing: <span id="count">0</span></span>
+          </div>
+        </div>
+
+        <p class="note" style="margin-top: 10px">
+          Tip: run Live Server / http server for JSON + iframe previews.
+        </p>
+      </section>
+
+      <section
+        class="path"
+        id="guidedPath"
+        aria-label="Start Learning guided path"
+      >
+        <div class="spread">
+          <div>
+            <div class="pill">🚀 Start Learning</div>
+            <h2 style="margin: 10px 0 6px">Guided path: Express → Full</h2>
+            <p class="sub">
+              Follow the recommended order. Each step opens the right project
+              and edition.
+            </p>
+          </div>
+          <div class="row">
+            <button class="btn" id="btnOpenPath" type="button">
+              Open Path Planner
+            </button>
+          </div>
+        </div>
+        <div class="pathGrid" id="pathSteps"></div>
+      </section>
+
+      <section class="grid" id="cards" aria-label="Project cards"></section>
+
+      <section class="footer">
+        <div>
+          <b>How to add projects:</b> update
+          <span class="kbd">data/slides.json</span> and create
+          <span class="kbd">projects/&lt;id&gt;/express/index.html</span> +
+          <span class="kbd">projects/&lt;id&gt;/full/index.html</span>.
+        </div>
+        <div class="row">
+          <a
+            class="btn primary"
+            href="data/slides.json"
+            target="_blank"
+            rel="noopener"
+            >View slides.json ↗</a
+          >
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="assets/js/app.js"></script>
+
+    <div class="modalBack" id="pathModalBack" aria-hidden="true">
+      <div
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Start Learning Path"
+      >
+        <div class="modalHd">
+          <div>
+            <div class="pill">🟠 Programmer’s Picnic</div>
+            <h2 style="margin: 8px 0 0">Start Learning Path</h2>
+            <p class="sub" style="margin: 6px 0 0">
+              Choose a step → open Express first → then Full.
+            </p>
+          </div>
+          <div class="row">
+            <button class="btn" id="btnPathClose" type="button">✖ Close</button>
+          </div>
+        </div>
+        <div class="modalBody">
+          <div class="row" style="justify-content: space-between">
+            <div class="row">
+              <span class="badge diff small" id="pathHint"
+                >Tip: Express first</span
+              >
+            </div>
+            <div class="row">
+              <button class="btn" id="btnPathExpress" type="button">
+                ⚡ Open Express
+              </button>
+              <button class="btn primary" id="btnPathFull" type="button">
+                🏆 Open Full
+              </button>
+            </div>
+          </div>
+          <div class="modalList" id="pathList"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

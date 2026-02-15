@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="theme-color" content="#d97706"/><title>To‑Do (Full)</title>
+<style>
+:root{--bg0:#fff7e6;--bg1:#fff1d6;--card:rgba(255,255,255,.9);--ink:#1f2937;--muted:#6b7280;--brand:#d97706;--border:rgba(31,41,55,.14);--shadow:0 12px 30px rgba(17,24,39,.1);--ring:0 0 0 4px rgba(217,119,6,.18)}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui;background:linear-gradient(180deg,var(--bg0),var(--bg1));color:var(--ink);padding:16px}
+.wrap{max-width:860px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow);padding:14px}
+h1{margin:0 0 6px} .sub{margin:0 0 12px;color:var(--muted);font-weight:650}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+input,select{border:1px solid var(--border);border-radius:14px;padding:10px 12px;font-weight:800;background:rgba(255,255,255,.75)}
+input:focus,select:focus{outline:none;box-shadow:var(--ring)}
+button{border:1px solid var(--border);background:white;border-radius:14px;padding:10px 12px;font-weight:950;cursor:pointer}
+button.primary{background:linear-gradient(135deg, rgba(217,119,6,.12), rgba(245,158,11,.16));border-color:rgba(217,119,6,.35)}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;border:1px solid rgba(217,119,6,.25);background:rgba(255,255,255,.7);font-weight:900;color:#92400e}
+.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:12px;margin-top:12px}
+@media(max-width:860px){.grid{grid-template-columns:1fr}}
+ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+li{display:flex;gap:10px;align-items:center;justify-content:space-between;background:rgba(255,255,255,.75);border:1px solid var(--border);border-radius:16px;padding:10px 12px}
+.left{display:flex;gap:10px;align-items:center;min-width:0}
+.chk{width:18px;height:18px}
+.text{font-weight:850;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.text.done{text-decoration:line-through;color:var(--muted);font-weight:800}
+.mini{color:var(--muted);font-size:13px;font-weight:750;margin-top:8px}
+code{background:rgba(17,24,39,.06);border:1px solid rgba(31,41,55,.12);padding:1px 6px;border-radius:8px}
+</style></head><body>
+<div class="wrap"><div class="card">
+<div class="row">
+  <div>
+    <div class="pill">🏆 Full Edition</div>
+    <h1>📝 To‑Do App</h1>
+    <p class="sub">Persistent tasks + filters + search + completion toggle.</p>
+  </div>
+  <div class="row" style="justify-content:flex-end">
+    <span class="pill">Saved: <span id="count">0</span></span>
+    <button class="primary" id="export">Export</button>
+    <button id="wipe">Wipe</button>
+  </div>
+</div>
+
+<div class="row" style="margin-top:10px;justify-content:flex-start">
+  <input id="task" style="flex:1;min-width:220px" placeholder="Enter task and press Enter"/>
+  <button class="primary" id="add">Add</button>
+  <input id="q" placeholder="Search..."/>
+  <select id="filter">
+    <option value="all">All</option>
+    <option value="open">Open</option>
+    <option value="done">Done</option>
+  </select>
+</div>
+
+<div class="grid">
+  <div>
+    <h3 style="margin:12px 0 8px">Tasks</h3>
+    <ul id="list"></ul>
+    <div class="mini">Tip: checkbox toggles done. Delete removes task.</div>
+  </div>
+  <div>
+    <h3 style="margin:12px 0 8px">Stats</h3>
+    <div class="row" style="justify-content:flex-start;gap:8px">
+      <span class="pill">Open: <span id="openN">0</span></span>
+      <span class="pill">Done: <span id="doneN">0</span></span>
+    </div>
+    <div class="mini" style="margin-top:10px">Stored in <b>localStorage</b> key <code>pp_todo_v1</code>.</div>
+  </div>
+</div>
+</div></div>
+<script>
+const KEY="pp_todo_v1";
+const $=(id)=>document.getElementById(id);
+let tasks=load();
+function uid(){return Math.random().toString(16).slice(2)+Date.now().toString(16);}
+function load(){try{const raw=localStorage.getItem(KEY);const arr=raw?JSON.parse(raw):[];return Array.isArray(arr)?arr:[];}catch{return []}}
+function save(){localStorage.setItem(KEY, JSON.stringify(tasks));}
+function addTask(){const text=$("task").value.trim();if(!text) return;tasks.unshift({id:uid(),text,done:false,ts:Date.now()});$("task").value="";save();render();}
+function delTask(id){tasks=tasks.filter(t=>t.id!==id);save();render();}
+function toggleDone(id){const t=tasks.find(x=>x.id===id);if(!t) return;t.done=!t.done;save();render();}
+function wipe(){if(!confirm("Wipe all tasks?")) return;tasks=[];save();render();}
+function exportJson(){
+  const blob=new Blob([JSON.stringify(tasks,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;a.download="todo_tasks.json";a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),500);
+}
+function render(){
+  const q=$("q").value.trim().toLowerCase();
+  const f=$("filter").value;
+  const filtered=tasks.filter(t=>{
+    if(f==="open" && t.done) return false;
+    if(f==="done" && !t.done) return false;
+    if(q && !t.text.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  $("list").innerHTML = filtered.map(t=>`
+    <li>
+      <div class="left">
+        <input class="chk" type="checkbox" ${t.done?"checked":""} data-act="toggle" data-id="${t.id}"/>
+        <span class="text ${t.done?"done":""}" title="${esc(t.text)}">${esc(t.text)}</span>
+      </div>
+      <button data-act="del" data-id="${t.id}">Delete</button>
+    </li>`).join("") || `<li><span class="text">No tasks (add one!)</span></li>`;
+  $("openN").textContent = tasks.filter(t=>!t.done).length;
+  $("doneN").textContent = tasks.filter(t=>t.done).length;
+  $("count").textContent = tasks.length;
+}
+$("add").addEventListener("click",addTask);
+$("task").addEventListener("keydown",(e)=>{if(e.key==="Enter") addTask();});
+$("q").addEventListener("input",render);
+$("filter").addEventListener("change",render);
+$("wipe").addEventListener("click",wipe);
+$("export").addEventListener("click",exportJson);
+$("list").addEventListener("click",(e)=>{
+  const btn=e.target.closest("[data-act]"); if(!btn) return;
+  const id=btn.getAttribute("data-id");
+  if(btn.getAttribute("data-act")==="del") delTask(id);
+});
+$("list").addEventListener("change",(e)=>{
+  const el=e.target.closest('[data-act="toggle"]'); if(!el) return;
+  toggleDone(el.getAttribute("data-id"));
+});
+function esc(s){return String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");}
+render();
+</script></body></html>

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="theme-color" content="#d97706"/><title>Quiz (Full)</title>
+<style>
+:root{--bg0:#fff7e6;--bg1:#fff1d6;--card:rgba(255,255,255,.9);--ink:#1f2937;--muted:#6b7280;--brand:#d97706;--border:rgba(31,41,55,.14);--shadow:0 12px 30px rgba(17,24,39,.1);--ring:0 0 0 4px rgba(217,119,6,.18)}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui;background:linear-gradient(180deg,var(--bg0),var(--bg1));color:var(--ink);padding:16px}
+.wrap{max-width:980px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow);padding:14px}
+h1{margin:0 0 6px} .sub{margin:0 0 12px;color:var(--muted);font-weight:650}
+.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:12px}
+@media(max-width:980px){.grid{grid-template-columns:1fr}}
+.panel{border:1px solid var(--border);background:rgba(255,255,255,.75);border-radius:18px;padding:12px}
+.opt{display:flex;gap:10px;align-items:center;border:1px solid rgba(31,41,55,.12);background:rgba(255,255,255,.85);border-radius:16px;padding:10px 12px;margin-top:10px;cursor:pointer}
+.opt input{transform:scale(1.1)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-top:12px}
+button{border:1px solid var(--border);background:white;border-radius:14px;padding:10px 12px;font-weight:950;cursor:pointer}
+button.primary{background:linear-gradient(135deg, rgba(217,119,6,.12), rgba(245,158,11,.16));border-color:rgba(217,119,6,.35)}
+button:focus-visible{outline:none;box-shadow:var(--shadow),var(--ring)}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;border:1px solid rgba(217,119,6,.25);background:rgba(255,255,255,.7);font-weight:900;color:#92400e}
+.mini{color:var(--muted);font-size:13px;font-weight:750;margin-top:10px}
+.reviewItem{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px dashed rgba(31,41,55,.12);color:var(--muted);font-weight:850}
+.reviewItem b{color:var(--ink)}
+.good{color:#065f46} .bad{color:#9a3412}
+</style></head><body>
+<div class="wrap"><div class="card">
+<div class="row">
+  <div>
+    <div class="pill">🏆 Full Edition</div>
+    <h1>🧠 Quiz App</h1>
+    <p class="sub">Timer + random order + review at the end.</p>
+  </div>
+  <div class="row" style="justify-content:flex-end">
+    <span class="pill">Time: <span id="time">60</span>s</span>
+    <span class="pill">Score: <span id="score">0</span></span>
+    <button id="restart" class="primary">Restart</button>
+  </div>
+</div>
+
+<div class="grid">
+  <div class="panel">
+    <div class="pill">Question <span id="n">1</span>/<span id="total">0</span></div>
+    <h2 id="question" style="margin:10px 0 0;font-size:18px"></h2>
+    <div id="options"></div>
+    <div class="row">
+      <button id="prev">‹ Prev</button>
+      <button class="primary" id="next">Next ›</button>
+      <button id="skip">Skip</button>
+    </div>
+    <div class="mini" id="msg"></div>
+  </div>
+
+  <div class="panel">
+    <div class="pill">Review</div>
+    <div class="mini">At finish: see right/wrong + explanation.</div>
+    <div id="review"></div>
+  </div>
+</div>
+</div></div>
+<script>
+const BANK=[
+  {q:"Which keyword creates a block-scoped variable?", a:["var","let","function","class"], c:1, exp:"let/const are block-scoped."},
+  {q:"Which method selects the first matching element?", a:["getElementById","querySelector","querySelectorAll","getElementsByClassName"], c:1, exp:"querySelector returns first match."},
+  {q:"Which is a truthy value?", a:["0","''","null","[]"], c:3, exp:"Empty array is truthy in JS."},
+  {q:"Which operator compares value and type?", a:["==","!=","===","="], c:2, exp:"=== is strict equality."},
+  {q:"Which event fires when an input value changes?", a:["click","input","hover","scroll"], c:1, exp:"input event fires on each change."}
+];
+const $=(id)=>document.getElementById(id);
+let Q=[], i=0, ans=[], left=60, timer=null;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let j=a.length-1;j>0;j--){
+    const k=Math.floor(Math.random()*(j+1));
+    [a[j],a[k]]=[a[k],a[j]];
+  }
+  return a;
+}
+function stop(){ if(timer){clearInterval(timer);timer=null;} }
+function tick(){ left--; $("time").textContent=left; if(left<=0){stop(); finish("Time up ⏱️");} }
+function score(){ return ans.reduce((s,v,idx)=>s+(v===Q[idx].c?1:0),0); }
+
+function start(){
+  Q=shuffle(BANK).slice(0,5);
+  i=0; ans=Array(Q.length).fill(null);
+  left=60; $("total").textContent=Q.length;
+  stop(); timer=setInterval(tick,1000);
+  render();
+}
+function render(){
+  $("n").textContent=i+1;
+  $("question").textContent=Q[i].q;
+  $("options").innerHTML=Q[i].a.map((t,idx)=>{
+    const checked=ans[i]===idx?"checked":"";
+    return `<label class="opt"><input type="radio" name="opt" value="${idx}" ${checked}/> <b>${esc(t)}</b></label>`;
+  }).join("");
+  $("prev").disabled=i===0;
+  $("next").textContent=i===Q.length-1?"Finish":"Next ›";
+  $("score").textContent=score();
+  $("msg").textContent="Pick an option. Skip allowed.";
+}
+$("options").addEventListener("change",(e)=>{
+  const r=e.target.closest('input[type="radio"]'); if(!r) return;
+  ans[i]=Number(r.value);
+  $("score").textContent=score();
+});
+$("prev").addEventListener("click",()=>{ if(i>0){i--;render();} });
+$("skip").addEventListener("click",()=>{ if(i<Q.length-1){i++;render();} else finish("Skipped last"); });
+$("next").addEventListener("click",()=>{ if(i<Q.length-1){i++;render();} else finish("Finished ✅"); });
+$("restart").addEventListener("click",()=>start());
+
+function finish(label){
+  stop();
+  const sc=score();
+  $("msg").innerHTML=`<b>${label}</b> Your score: <b>${sc}/${Q.length}</b>.`;
+  $("review").innerHTML=Q.map((qq,idx)=>{
+    const a=ans[idx];
+    const ok=a===qq.c;
+    const your=(a==null)?"—":qq.a[a];
+    const correct=qq.a[qq.c];
+    return `
+      <div class="reviewItem">
+        <div style="max-width:75%">
+          <div><b>Q${idx+1}.</b> ${esc(qq.q)}</div>
+          <div class="${ok?'good':'bad'}">Your: ${esc(String(your))}</div>
+          <div class="good">Correct: ${esc(String(correct))}</div>
+          <div class="mini">${esc(qq.exp||"")}</div>
+        </div>
+        <div class="pill">${ok?"✅":"❌"}</div>
+      </div>`;
+  }).join("");
+}
+function esc(s){return String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");}
+start();
+</script></body></html>

@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "title": "JavaScript Projects Showcase",
+    "version": "1.0",
+    "theme": "light-saffron",
+    "guidedPath": {
+      "title": "Start Learning Path",
+      "steps": [
+        {
+          "title": "DOM Basics with To‑Do",
+          "desc": "Learn querySelector, events, rendering, and state.",
+          "projectIds": [
+            "todo"
+          ]
+        },
+        {
+          "title": "Logic + Keyboard in Calculator",
+          "desc": "Build expressions, validate input, add keyboard support.",
+          "projectIds": [
+            "calculator"
+          ]
+        },
+        {
+          "title": "State Machines in Quiz",
+          "desc": "Timers, screens, review, score calculation.",
+          "projectIds": [
+            "quiz"
+          ]
+        }
+      ]
+    }
+  },
+  "projects": [
+    {
+      "id": "todo",
+      "icon": "📝",
+      "title": "To‑Do App",
+      "summary": "Add, complete, delete tasks. Express: minimal. Full: persistence + filters.",
+      "skills": [
+        "Arrays",
+        "DOM",
+        "Events",
+        "State",
+        "localStorage"
+      ],
+      "tags": [
+        "starter",
+        "ui"
+      ],
+      "links": {
+        "express": "projects/todo/express/index.html",
+        "full": "projects/todo/full/index.html"
+      },
+      "difficulty": "Beginner",
+      "difficultyRank": 1,
+      "pathOrder": 1,
+      "thumb": "assets/thumbs/todo.svg"
+    },
+    {
+      "id": "calculator",
+      "icon": "🧮",
+      "title": "Calculator + History",
+      "summary": "Calculator with history. Full adds keyboard + persist history.",
+      "skills": [
+        "Functions",
+        "Conditions",
+        "DOM",
+        "Keyboard events",
+        "localStorage"
+      ],
+      "tags": [
+        "logic",
+        "ui"
+      ],
+      "links": {
+        "express": "projects/calculator/express/index.html",
+        "full": "projects/calculator/full/index.html"
+      },
+      "difficulty": "Beginner+",
+      "difficultyRank": 2,
+      "pathOrder": 2,
+      "thumb": "assets/thumbs/calculator.svg"
+    },
+    {
+      "id": "quiz",
+      "icon": "🧠",
+      "title": "Quiz App (MCQ)",
+      "summary": "Play MCQ quiz. Full adds timer, review, randomization.",
+      "skills": [
+        "Objects",
+        "Rendering",
+        "State",
+        "Timers"
+      ],
+      "tags": [
+        "ui",
+        "data"
+      ],
+      "links": {
+        "express": "projects/quiz/express/index.html",
+        "full": "projects/quiz/full/index.html"
+      },
+      "difficulty": "Intermediate",
+      "difficultyRank": 3,
+      "pathOrder": 3,
+      "thumb": "assets/thumbs/quiz.svg"
+    }
+  ]
+}

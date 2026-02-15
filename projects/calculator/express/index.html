@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="theme-color" content="#d97706"/><title>Calculator (Express)</title>
+<style>
+:root{--bg0:#fff7e6;--bg1:#fff1d6;--card:rgba(255,255,255,.9);--ink:#1f2937;--muted:#6b7280;--brand:#d97706;--border:rgba(31,41,55,.14);--shadow:0 12px 30px rgba(17,24,39,.1)}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui;background:linear-gradient(180deg,var(--bg0),var(--bg1));color:var(--ink);padding:16px}
+.wrap{max-width:760px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow);padding:14px}
+h1{margin:0 0 6px} .sub{margin:0 0 12px;color:var(--muted);font-weight:650}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.screen{border:1px solid var(--border);border-radius:18px;background:rgba(255,255,255,.75);padding:12px;font-weight:900;font-size:20px}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+button{border:1px solid var(--border);background:white;border-radius:16px;padding:12px 10px;font-weight:950;cursor:pointer}
+button.op{background:linear-gradient(135deg, rgba(217,119,6,.12), rgba(245,158,11,.16));border-color:rgba(217,119,6,.35)}
+.hist{border:1px solid var(--border);border-radius:18px;background:rgba(255,255,255,.75);padding:10px;min-height:150px}
+.item{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dashed rgba(31,41,55,.12);font-weight:800;color:var(--muted)}
+.item b{color:var(--ink)}
+</style></head><body>
+<div class="wrap"><div class="card">
+<h1>🧮 Calculator <span style="color:var(--brand)">Express</span></h1>
+<p class="sub">Tap keys to build an expression. Press = to evaluate.</p>
+<div class="grid">
+  <div>
+    <div class="screen" id="screen">0</div>
+    <div class="keys" id="keys"></div>
+  </div>
+  <div>
+    <div class="screen" style="font-size:14px;color:var(--muted);font-weight:800">History (this session)</div>
+    <div class="hist" id="hist"></div>
+  </div>
+</div>
+</div></div>
+<script>
+const screen=document.getElementById("screen");
+const hist=document.getElementById("hist");
+const keys=document.getElementById("keys");
+const layout=["7","8","9","/","4","5","6","*","1","2","3","-","0",".","C","+","⌫","(",")","="];
+let expr="";
+function render(){screen.textContent=expr||"0";}
+function safeEval(s){
+  if(!/^[0-9+\-*/().\s]+$/.test(s)) throw new Error("Invalid chars");
+  if(/[*\/]{2,}/.test(s)) throw new Error("Bad operator");
+  return Function("return ("+s+")")();
+}
+function pushHistory(e,out){
+  const div=document.createElement("div");
+  div.className="item";
+  div.innerHTML=`<span>${esc(e)}</span><b>${esc(String(out))}</b>`;
+  hist.prepend(div);
+}
+keys.innerHTML=layout.map(k=>{
+  const op=["+","-","*","/","="].includes(k);
+  return `<button class="${op?'op':''}" data-k="${k}">${k}</button>`;
+}).join("");
+keys.addEventListener("click",(e)=>{
+  const b=e.target.closest("button[data-k]"); if(!b) return;
+  const k=b.getAttribute("data-k");
+  if(k==="C"){expr="";return render();}
+  if(k==="⌫"){expr=expr.slice(0,-1);return render();}
+  if(k==="="){
+    if(!expr.trim()) return;
+    try{const out=safeEval(expr);pushHistory(expr,out);expr=String(out);}
+    catch{pushHistory(expr,"Error");expr="";}
+    return render();
+  }
+  expr+=k; render();
+});
+function esc(s){return String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");}
+render();
+</script></body></html>
