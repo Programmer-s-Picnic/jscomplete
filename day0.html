@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#d97706" />
-  <title>Day 0 — JavaScript: Intro, History, Importance + Hello World</title>
-  <meta name="description" content="Day 0 of JavaScript course: what JS is, history, importance, job prospects, ecosystem spin-offs (React/Vue/etc), and Hello World." />
+  <title>Day 0 — JavaScript: Intro, History, Importance + Hello World (Toggle Editors)</title>
+  <meta name="description" content="Day 0 of JavaScript course: intro, history, importance, job prospects, spin-offs, and practice with toggle editors (JS + HTML preview)." />
 
   <style>
     :root{
@@ -16,7 +16,7 @@
       --border:rgba(31,41,55,.12);
       --shadow:0 14px 40px rgba(17,24,39,.10);
       --ring:0 0 0 4px rgba(217,119,6,.18);
-      --r1:18px; --r2:24px;
+      --r2:24px;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
     }
     *{box-sizing:border-box}
@@ -73,12 +73,7 @@
       background:linear-gradient(135deg, rgba(217,119,6,.12), rgba(245,158,11,.16));
     }
     .btn:focus-visible{outline:none;box-shadow:var(--shadow),var(--ring)}
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(12,1fr);
-      gap:14px;
-      margin-top:14px;
-    }
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-top:14px}
     .card{
       grid-column:span 12;
       border:1px solid var(--border);
@@ -147,9 +142,36 @@
       border:1px solid rgba(31,41,55,.12);
       padding:2px 6px;
       border-radius:8px;
+      white-space:nowrap;
     }
 
-    /* editor embed */
+    /* toggle + embeds */
+    .toggleBar{
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;
+      padding:10px;
+      border:1px solid rgba(31,41,55,.12);
+      border-radius:18px;
+      background:rgba(255,255,255,.72);
+      margin-top:12px;
+    }
+    .seg{
+      display:flex;
+      border:1px solid rgba(31,41,55,.12);
+      border-radius:999px;
+      overflow:hidden;
+      background:rgba(255,255,255,.7);
+    }
+    .seg button{
+      border:0;background:transparent;
+      padding:10px 12px;
+      cursor:pointer;
+      font-weight:950;
+      color:var(--ink);
+    }
+    .seg button.active{
+      background:linear-gradient(135deg, rgba(217,119,6,.14), rgba(245,158,11,.18));
+      color:#92400e;
+    }
     .embedWrap{
       border:1px solid var(--border);
       border-radius:22px;
@@ -166,16 +188,14 @@
         radial-gradient(900px 360px at 10% 0%, rgba(245,158,11,.18), transparent 55%),
         radial-gradient(800px 320px at 92% 10%, rgba(217,119,6,.14), transparent 55%);
     }
-    .embedTop .sub{margin:0}
     iframe.ppEditor{
       width:100%;
-      height:640px;
+      height:720px;
       border:0;
       background:white;
     }
-    @media(max-width:700px){
-      iframe.ppEditor{height:720px}
-    }
+    @media(max-width:700px){iframe.ppEditor{height:780px}}
+    .hidden{display:none !important}
   </style>
 </head>
 
@@ -192,7 +212,7 @@
           </p>
         </div>
         <div class="row">
-          <button class="btn primary" id="btnJumpEditor" type="button">🚀 Jump to Editor</button>
+          <button class="btn primary" id="btnJumpEditors" type="button">🚀 Jump to Editors</button>
           <button class="btn" id="btnPrint" type="button">🖨️ Print</button>
         </div>
       </div>
@@ -402,30 +422,64 @@ console.log("Hello, JavaScript!");</code></pre>
   document.getElementById("msg").textContent = "Hello, JavaScript!";
 &lt;/script&gt;</code></pre>
 
-          <p class="mini">
-            Now try it in the embedded editor below (our Programmer’s Picnic JS editor).
+          <p class="muted" style="margin-top:12px">
+            Now practice using the toggle editors below (HTML Preview ↔ JavaScript).
           </p>
         </div>
       </article>
 
-      <!-- EMBED OUR JS EDITOR -->
-      <article class="card" id="editor">
+      <!-- TOGGLE EDITORS (HTML + JS) -->
+      <article class="card" id="editorsCard">
         <div class="hd">
           <p class="kicker">Practice</p>
-          <h2>Embedded JavaScript Editor (Programmer’s Picnic)</h2>
+          <h2>Toggle Editors: HTML Preview ↔ JavaScript</h2>
         </div>
         <div class="bd">
-          <div class="embedWrap">
-            <div class="embedTop">
-              <div>
-                <div class="pill">🧪 Live Practice</div>
-                <p class="sub">Write and run JS here. Start with <span class="kbd">console.log("Hello World")</span>.</p>
-              </div>
-              <div class="row">
-                <a class="btn" href="https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/" target="_blank" rel="noopener">Open in new tab ↗</a>
-              </div>
+          <p class="muted">
+            Start with HTML Preview to create a button + message, then switch to JS editor for function practice.
+          </p>
+
+          <div class="toggleBar" id="editors">
+            <div class="row">
+              <span class="pill" id="activeLabel">🧩 HTML Preview Editor</span>
+              <span class="muted" id="activeHint">Build a mini page and test interactions fast.</span>
             </div>
 
+            <div class="row">
+              <div class="seg" role="tablist" aria-label="Editor toggle">
+                <button id="tabHtml" class="active" type="button" role="tab" aria-selected="true">🧩 HTML Preview</button>
+                <button id="tabJs" type="button" role="tab" aria-selected="false">🧪 JavaScript</button>
+              </div>
+              <a class="btn" id="btnOpenNew" href="https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html" target="_blank" rel="noopener">Open ↗</a>
+            </div>
+          </div>
+
+          <!-- HTML Preview Editor -->
+          <div class="embedWrap" id="panelHtml" role="tabpanel" aria-label="HTML Preview Editor">
+            <div class="embedTop">
+              <div>
+                <div class="pill">🧩 HTML Preview Editor</div>
+                <p class="sub">Perfect for quick UI + DOM experiments.</p>
+              </div>
+            </div>
+            <iframe
+              class="ppEditor"
+              title="Programmer’s Picnic HTML Preview Editor"
+              src="https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html"
+              loading="eager"
+              allow="clipboard-read; clipboard-write; fullscreen"
+              allowfullscreen
+            ></iframe>
+          </div>
+
+          <!-- JavaScript Editor -->
+          <div class="embedWrap hidden" id="panelJs" role="tabpanel" aria-label="JavaScript Editor">
+            <div class="embedTop">
+              <div>
+                <div class="pill">🧪 JavaScript Editor</div>
+                <p class="sub">Practice console logs, functions, and small experiments.</p>
+              </div>
+            </div>
             <iframe
               class="ppEditor"
               title="Programmer’s Picnic JavaScript Editor"
@@ -436,8 +490,8 @@ console.log("Hello, JavaScript!");</code></pre>
             ></iframe>
           </div>
 
-          <p class="mini">
-            Tip: If you want teacher mode later, we can add a URL toggle like <span class="kbd">?tmode=1</span> (if your editor supports it).
+          <p class="muted" style="margin-top:12px">
+            Tip: Use DevTools Console on this page too. Toggle choice is saved in <span class="kbd">localStorage</span>.
           </p>
         </div>
       </article>
@@ -486,9 +540,50 @@ console.log("Hello, JavaScript!");</code></pre>
     const $ = (id) => document.getElementById(id);
 
     $("btnPrint").addEventListener("click", () => window.print());
-    $("btnJumpEditor").addEventListener("click", () => {
-      document.getElementById("editor").scrollIntoView({ behavior: "smooth", block: "start" });
+    $("btnJumpEditors").addEventListener("click", () => {
+      document.getElementById("editorsCard").scrollIntoView({ behavior: "smooth", block: "start" });
     });
+
+    const tabs = {
+      html: {
+        tab: $("tabHtml"),
+        panel: $("panelHtml"),
+        label: "🧩 HTML Preview Editor",
+        hint: "Build a mini page and test interactions fast.",
+        url: "https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html"
+      },
+      js: {
+        tab: $("tabJs"),
+        panel: $("panelJs"),
+        label: "🧪 JavaScript Editor",
+        hint: "Practice console logs, functions, and small experiments.",
+        url: "https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/"
+      }
+    };
+
+    function setActive(key){
+      const a = tabs[key];
+      const b = key === "html" ? tabs.js : tabs.html;
+
+      a.tab.classList.add("active");
+      a.tab.setAttribute("aria-selected","true");
+      a.panel.classList.remove("hidden");
+
+      b.tab.classList.remove("active");
+      b.tab.setAttribute("aria-selected","false");
+      b.panel.classList.add("hidden");
+
+      $("activeLabel").textContent = a.label;
+      $("activeHint").textContent = a.hint;
+      $("btnOpenNew").href = a.url;
+
+      localStorage.setItem("pp_day0_editor", key);
+    }
+
+    tabs.html.tab.addEventListener("click", () => setActive("html"));
+    tabs.js.tab.addEventListener("click", () => setActive("js"));
+
+    setActive(localStorage.getItem("pp_day0_editor") === "js" ? "js" : "html");
   </script>
 </body>
 </html>
