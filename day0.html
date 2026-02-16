@@ -1,589 +1,842 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="theme-color" content="#d97706" />
-  <title>Day 0 — JavaScript: Intro, History, Importance + Hello World (Toggle Editors)</title>
-  <meta name="description" content="Day 0 of JavaScript course: intro, history, importance, job prospects, spin-offs, and practice with toggle editors (JS + HTML preview)." />
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#d97706" />
+    <title>
+      Day 0 — JavaScript: Intro, History, Importance + Hello World (Toggle
+      Editors)
+    </title>
+    <meta
+      name="description"
+      content="Day 0 of JavaScript course: intro, history, importance, job prospects, spin-offs, and practice with toggle editors (JS + HTML preview)."
+    />
 
-  <style>
-    :root{
-      --bg0:#fff7e6; --bg1:#fff1d6;
-      --card:rgba(255,255,255,.9);
-      --ink:#1f2937; --muted:#6b7280;
-      --brand:#d97706; --brand2:#f59e0b;
-      --border:rgba(31,41,55,.12);
-      --shadow:0 14px 40px rgba(17,24,39,.10);
-      --ring:0 0 0 4px rgba(217,119,6,.18);
-      --r2:24px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      color:var(--ink);
-      background:
-        radial-gradient(1100px 520px at 12% 0%, rgba(245,158,11,.22), transparent 60%),
-        radial-gradient(900px 420px at 92% 18%, rgba(217,119,6,.18), transparent 55%),
-        linear-gradient(180deg,var(--bg0),var(--bg1));
-    }
-    a{color:inherit}
-    .wrap{max-width:1080px;margin:0 auto;padding:16px 14px 64px}
-    .hero{
-      border:1px solid var(--border);
-      border-radius:var(--r2);
-      background:rgba(255,255,255,.78);
-      box-shadow:var(--shadow);
-      padding:18px;
-      overflow:hidden;
-      position:relative;
-    }
-    .hero::after{
-      content:"";
-      position:absolute; inset:-40px -40px auto auto;
-      width:240px; height:240px; border-radius:999px;
-      background:radial-gradient(circle at 30% 30%, rgba(245,158,11,.22), transparent 60%);
-      pointer-events:none;
-    }
-    h1{margin:0 0 8px;font-size:clamp(26px,3.5vw,44px);letter-spacing:-.6px}
-    .sub{margin:0;color:var(--muted);font-weight:650;line-height:1.45}
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    .spread{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
-    .pill{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:6px 10px;border-radius:999px;
-      border:1px solid rgba(217,119,6,.25);
-      background:rgba(255,255,255,.7);
-      font-weight:900;color:#92400e;
-    }
-    .btn{
-      border:1px solid var(--border);
-      background:white;
-      color:var(--ink);
-      padding:10px 12px;
-      border-radius:14px;
-      box-shadow:0 6px 18px rgba(17,24,39,.06);
-      cursor:pointer;
-      font-weight:900;
-    }
-    .btn.primary{
-      border-color:rgba(217,119,6,.35);
-      background:linear-gradient(135deg, rgba(217,119,6,.12), rgba(245,158,11,.16));
-    }
-    .btn:focus-visible{outline:none;box-shadow:var(--shadow),var(--ring)}
-    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-top:14px}
-    .card{
-      grid-column:span 12;
-      border:1px solid var(--border);
-      border-radius:var(--r2);
-      background:var(--card);
-      box-shadow:var(--shadow);
-      overflow:hidden;
-    }
-    .card .hd{
-      padding:14px 16px 10px;
-      border-bottom:1px solid rgba(31,41,55,.10);
-      background:
-        radial-gradient(900px 360px at 10% 0%, rgba(245,158,11,.18), transparent 55%),
-        radial-gradient(800px 320px at 92% 10%, rgba(217,119,6,.14), transparent 55%);
-    }
-    .card .bd{padding:14px 16px 16px}
-    .kicker{margin:0;color:#92400e;font-weight:900;letter-spacing:.2px}
-    h2{margin:6px 0 0;font-size:18px;letter-spacing:-.2px}
-    p{margin:10px 0 0;color:var(--ink);line-height:1.55}
-    .muted{color:var(--muted);font-weight:650}
-    .cols{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
-    @media(max-width:900px){.cols{grid-template-columns:1fr}}
-    ul{margin:10px 0 0;padding-left:18px}
-    li{margin:8px 0;color:var(--ink);line-height:1.5}
-    .tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-    .tag{
-      font-weight:900;
-      border:1px solid rgba(217,119,6,.22);
-      background:rgba(245,158,11,.12);
-      color:#92400e;
-      padding:6px 10px;
-      border-radius:999px;
-      font-size:12px;
-    }
-    .timeline{display:grid;gap:10px;margin-top:12px}
-    .titem{
-      border:1px solid rgba(31,41,55,.12);
-      border-radius:18px;
-      background:rgba(255,255,255,.78);
-      padding:12px;
-      display:flex;gap:12px;align-items:flex-start;justify-content:space-between;
-    }
-    .titem b{white-space:nowrap}
-    .titem .txt{min-width:0}
-    .titem .txt p{margin:6px 0 0}
-    code, pre{
-      font-family:var(--mono);
-      background:rgba(17,24,39,.06);
-      border:1px solid rgba(31,41,55,.12);
-      border-radius:14px;
-    }
-    pre{padding:12px;overflow:auto;margin:12px 0 0;font-size:13px;line-height:1.45}
-    .footer{
-      margin-top:14px;
-      border:1px solid var(--border);
-      border-radius:var(--r2);
-      background:rgba(255,255,255,.7);
-      box-shadow:var(--shadow);
-      padding:14px;
-      display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;
-    }
-    .kbd{
-      font-family:var(--mono);
-      font-size:12px;
-      background:rgba(17,24,39,.06);
-      border:1px solid rgba(31,41,55,.12);
-      padding:2px 6px;
-      border-radius:8px;
-      white-space:nowrap;
-    }
+    <style>
+      :root {
+        --bg0: #fff7e6;
+        --bg1: #fff1d6;
+        --card: rgba(255, 255, 255, 0.9);
+        --ink: #1f2937;
+        --muted: #6b7280;
+        --brand: #d97706;
+        --brand2: #f59e0b;
+        --border: rgba(31, 41, 55, 0.12);
+        --shadow: 0 14px 40px rgba(17, 24, 39, 0.1);
+        --ring: 0 0 0 4px rgba(217, 119, 6, 0.18);
+        --r2: 24px;
+        --mono:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family:
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Arial;
+        color: var(--ink);
+        background:
+          radial-gradient(
+            1100px 520px at 12% 0%,
+            rgba(245, 158, 11, 0.22),
+            transparent 60%
+          ),
+          radial-gradient(
+            900px 420px at 92% 18%,
+            rgba(217, 119, 6, 0.18),
+            transparent 55%
+          ),
+          linear-gradient(180deg, var(--bg0), var(--bg1));
+      }
+      a {
+        color: inherit;
+      }
+      .wrap {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 16px 14px 64px;
+      }
+      .hero {
+        border: 1px solid var(--border);
+        border-radius: var(--r2);
+        background: rgba(255, 255, 255, 0.78);
+        box-shadow: var(--shadow);
+        padding: 18px;
+        overflow: hidden;
+        position: relative;
+      }
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: -40px -40px auto auto;
+        width: 240px;
+        height: 240px;
+        border-radius: 999px;
+        background: radial-gradient(
+          circle at 30% 30%,
+          rgba(245, 158, 11, 0.22),
+          transparent 60%
+        );
+        pointer-events: none;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(26px, 3.5vw, 44px);
+        letter-spacing: -0.6px;
+      }
+      .sub {
+        margin: 0;
+        color: var(--muted);
+        font-weight: 650;
+        line-height: 1.45;
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .spread {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(217, 119, 6, 0.25);
+        background: rgba(255, 255, 255, 0.7);
+        font-weight: 900;
+        color: #92400e;
+      }
+      .btn {
+        border: 1px solid var(--border);
+        background: white;
+        color: var(--ink);
+        padding: 10px 12px;
+        border-radius: 14px;
+        box-shadow: 0 6px 18px rgba(17, 24, 39, 0.06);
+        cursor: pointer;
+        font-weight: 900;
+      }
+      .btn.primary {
+        border-color: rgba(217, 119, 6, 0.35);
+        background: linear-gradient(
+          135deg,
+          rgba(217, 119, 6, 0.12),
+          rgba(245, 158, 11, 0.16)
+        );
+      }
+      .btn:focus-visible {
+        outline: none;
+        box-shadow: var(--shadow), var(--ring);
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 14px;
+        margin-top: 14px;
+      }
+      .card {
+        grid-column: span 12;
+        border: 1px solid var(--border);
+        border-radius: var(--r2);
+        background: var(--card);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .card .hd {
+        padding: 14px 16px 10px;
+        border-bottom: 1px solid rgba(31, 41, 55, 0.1);
+        background:
+          radial-gradient(
+            900px 360px at 10% 0%,
+            rgba(245, 158, 11, 0.18),
+            transparent 55%
+          ),
+          radial-gradient(
+            800px 320px at 92% 10%,
+            rgba(217, 119, 6, 0.14),
+            transparent 55%
+          );
+      }
+      .card .bd {
+        padding: 14px 16px 16px;
+      }
+      .kicker {
+        margin: 0;
+        color: #92400e;
+        font-weight: 900;
+        letter-spacing: 0.2px;
+      }
+      h2 {
+        margin: 6px 0 0;
+        font-size: 18px;
+        letter-spacing: -0.2px;
+      }
+      p {
+        margin: 10px 0 0;
+        color: var(--ink);
+        line-height: 1.55;
+      }
+      .muted {
+        color: var(--muted);
+        font-weight: 650;
+      }
+      .cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 12px;
+      }
+      @media (max-width: 900px) {
+        .cols {
+          grid-template-columns: 1fr;
+        }
+      }
+      ul {
+        margin: 10px 0 0;
+        padding-left: 18px;
+      }
+      li {
+        margin: 8px 0;
+        color: var(--ink);
+        line-height: 1.5;
+      }
+      .tagrow {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+      .tag {
+        font-weight: 900;
+        border: 1px solid rgba(217, 119, 6, 0.22);
+        background: rgba(245, 158, 11, 0.12);
+        color: #92400e;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+      }
+      .timeline {
+        display: grid;
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .titem {
+        border: 1px solid rgba(31, 41, 55, 0.12);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.78);
+        padding: 12px;
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        justify-content: space-between;
+      }
+      .titem b {
+        white-space: nowrap;
+      }
+      .titem .txt {
+        min-width: 0;
+      }
+      .titem .txt p {
+        margin: 6px 0 0;
+      }
+      code,
+      pre {
+        font-family: var(--mono);
+        background: rgba(17, 24, 39, 0.06);
+        border: 1px solid rgba(31, 41, 55, 0.12);
+        border-radius: 14px;
+      }
+      pre {
+        padding: 12px;
+        overflow: auto;
+        margin: 12px 0 0;
+        font-size: 13px;
+        line-height: 1.45;
+      }
+      .footer {
+        margin-top: 14px;
+        border: 1px solid var(--border);
+        border-radius: var(--r2);
+        background: rgba(255, 255, 255, 0.7);
+        box-shadow: var(--shadow);
+        padding: 14px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .kbd {
+        font-family: var(--mono);
+        font-size: 12px;
+        background: rgba(17, 24, 39, 0.06);
+        border: 1px solid rgba(31, 41, 55, 0.12);
+        padding: 2px 6px;
+        border-radius: 8px;
+        white-space: nowrap;
+      }
 
-    /* toggle + embeds */
-    .toggleBar{
-      display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;
-      padding:10px;
-      border:1px solid rgba(31,41,55,.12);
-      border-radius:18px;
-      background:rgba(255,255,255,.72);
-      margin-top:12px;
-    }
-    .seg{
-      display:flex;
-      border:1px solid rgba(31,41,55,.12);
-      border-radius:999px;
-      overflow:hidden;
-      background:rgba(255,255,255,.7);
-    }
-    .seg button{
-      border:0;background:transparent;
-      padding:10px 12px;
-      cursor:pointer;
-      font-weight:950;
-      color:var(--ink);
-    }
-    .seg button.active{
-      background:linear-gradient(135deg, rgba(217,119,6,.14), rgba(245,158,11,.18));
-      color:#92400e;
-    }
-    .embedWrap{
-      border:1px solid var(--border);
-      border-radius:22px;
-      overflow:hidden;
-      background:rgba(255,255,255,.72);
-      box-shadow:var(--shadow);
-      margin-top:12px;
-    }
-    .embedTop{
-      padding:10px 12px;
-      display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;
-      border-bottom:1px solid rgba(31,41,55,.10);
-      background:
-        radial-gradient(900px 360px at 10% 0%, rgba(245,158,11,.18), transparent 55%),
-        radial-gradient(800px 320px at 92% 10%, rgba(217,119,6,.14), transparent 55%);
-    }
-    iframe.ppEditor{
-      width:100%;
-      height:720px;
-      border:0;
-      background:white;
-    }
-    @media(max-width:700px){iframe.ppEditor{height:780px}}
-    .hidden{display:none !important}
-  </style>
-</head>
+      /* toggle + embeds */
+      .toggleBar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        border: 1px solid rgba(31, 41, 55, 0.12);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.72);
+        margin-top: 12px;
+      }
+      .seg {
+        display: flex;
+        border: 1px solid rgba(31, 41, 55, 0.12);
+        border-radius: 999px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.7);
+      }
+      .seg button {
+        border: 0;
+        background: transparent;
+        padding: 10px 12px;
+        cursor: pointer;
+        font-weight: 950;
+        color: var(--ink);
+      }
+      .seg button.active {
+        background: linear-gradient(
+          135deg,
+          rgba(217, 119, 6, 0.14),
+          rgba(245, 158, 11, 0.18)
+        );
+        color: #92400e;
+      }
+      .embedWrap {
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.72);
+        box-shadow: var(--shadow);
+        margin-top: 12px;
+      }
+      .embedTop {
+        padding: 10px 12px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(31, 41, 55, 0.1);
+        background:
+          radial-gradient(
+            900px 360px at 10% 0%,
+            rgba(245, 158, 11, 0.18),
+            transparent 55%
+          ),
+          radial-gradient(
+            800px 320px at 92% 10%,
+            rgba(217, 119, 6, 0.14),
+            transparent 55%
+          );
+      }
+      iframe.ppEditor {
+        width: 100%;
+        height: 720px;
+        border: 0;
+        background: white;
+      }
+      @media (max-width: 700px) {
+        iframe.ppEditor {
+          height: 780px;
+        }
+      }
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
 
-<body>
-  <main class="wrap">
-    <section class="hero">
-      <div class="spread">
-        <div>
-          <div class="pill">🟠 Programmer’s Picnic • JavaScript Champion</div>
-          <h1>Day 0 — JavaScript: What it is, why it matters, and your first “Hello World”</h1>
-          <p class="sub">
-            Today you’ll understand where JavaScript came from, what it powers, what jobs it unlocks,
-            the ecosystem “spin-offs” (React/Vue/Node/etc), and you’ll run your first JS.
-          </p>
-        </div>
-        <div class="row">
-          <button class="btn primary" id="btnJumpEditors" type="button">🚀 Jump to Editors</button>
-          <button class="btn" id="btnPrint" type="button">🖨️ Print</button>
-        </div>
-      </div>
-
-      <div class="tagrow" aria-label="Key outcomes">
-        <span class="tag">JS vs ECMAScript</span>
-        <span class="tag">Browser + Server</span>
-        <span class="tag">Frontend + Backend</span>
-        <span class="tag">React / Vue / Angular</span>
-        <span class="tag">Node.js</span>
-        <span class="tag">TypeScript</span>
-      </div>
-    </section>
-
-    <section class="grid">
-      <!-- WHAT IS JS -->
-      <article class="card">
-        <div class="hd">
-          <p class="kicker">1) Introduction</p>
-          <h2>What is JavaScript?</h2>
-        </div>
-        <div class="bd">
-          <p>
-            <b>JavaScript (JS)</b> is the language of the web. It runs inside your browser to make pages interactive
-            (buttons, forms, animations, data fetching), and it also runs on servers via <b>Node.js</b>.
-          </p>
-          <div class="cols">
-            <div>
-              <p class="muted"><b>Think of JS as:</b></p>
-              <ul>
-                <li><b>UI logic</b> for websites & web apps</li>
-                <li><b>Automation</b> in browsers and tools</li>
-                <li><b>Backend APIs</b> using Node.js</li>
-                <li><b>Cross-platform apps</b> (web, mobile, desktop)</li>
-              </ul>
-            </div>
-            <div>
-              <p class="muted"><b>JS is not Java:</b></p>
-              <ul>
-                <li>Different languages, different ecosystems</li>
-                <li>JS is dynamic and prototype-based</li>
-                <li>Modern JS supports classes, modules, async/await, etc.</li>
-              </ul>
-            </div>
+  <body>
+    <main class="wrap">
+      <section class="hero">
+        <div class="spread">
+          <div>
+            <div class="pill">🟠 Programmer’s Picnic • JavaScript Champion</div>
+            <h1>
+              Day 0 — JavaScript: What it is, why it matters, and your first
+              “Hello World”
+            </h1>
+            <p class="sub">
+              Today you’ll understand where JavaScript came from, what it
+              powers, what jobs it unlocks, the ecosystem “spin-offs”
+              (React/Vue/Node/etc), and you’ll run your first JS.
+            </p>
+          </div>
+          <div class="row">
+            <button class="btn primary" id="btnJumpEditors" type="button">
+              🚀 Jump to Editors
+            </button>
+            <button class="btn" id="btnPrint" type="button">🖨️ Print</button>
           </div>
         </div>
-      </article>
 
-      <!-- HISTORY -->
-      <article class="card">
-        <div class="hd">
-          <p class="kicker">2) History</p>
-          <h2>How JavaScript evolved (quick timeline)</h2>
+        <div class="tagrow" aria-label="Key outcomes">
+          <span class="tag">JS vs ECMAScript</span>
+          <span class="tag">Browser + Server</span>
+          <span class="tag">Frontend + Backend</span>
+          <span class="tag">React / Vue / Angular</span>
+          <span class="tag">Node.js</span>
+          <span class="tag">TypeScript</span>
         </div>
-        <div class="bd">
-          <p class="muted">You don’t need to memorize dates—just understand the evolution.</p>
-          <div class="timeline">
-            <div class="titem">
-              <div class="txt">
-                <b>1995 — Birth</b>
-                <p>Created for the browser to add interactivity to web pages.</p>
+      </section>
+
+      <section class="grid">
+        <!-- WHAT IS JS -->
+        <article class="card">
+          <div class="hd">
+            <p class="kicker">1) Introduction</p>
+            <h2>What is JavaScript?</h2>
+          </div>
+          <div class="bd">
+            <p>
+              <b>JavaScript (JS)</b> is the language of the web. It runs inside
+              your browser to make pages interactive (buttons, forms,
+              animations, data fetching), and it also runs on servers via
+              <b>Node.js</b>.
+            </p>
+            <div class="cols">
+              <div>
+                <p class="muted"><b>Think of JS as:</b></p>
+                <ul>
+                  <li><b>UI logic</b> for websites & web apps</li>
+                  <li><b>Automation</b> in browsers and tools</li>
+                  <li><b>Backend APIs</b> using Node.js</li>
+                  <li><b>Cross-platform apps</b> (web, mobile, desktop)</li>
+                </ul>
               </div>
-              <span class="pill">Browser</span>
-            </div>
-            <div class="titem">
-              <div class="txt">
-                <b>1997 — ECMAScript</b>
-                <p>Standardized as <b>ECMAScript</b>. JavaScript is the most famous implementation.</p>
+              <div>
+                <p class="muted"><b>JS is not Java:</b></p>
+                <ul>
+                  <li>Different languages, different ecosystems</li>
+                  <li>JS is dynamic and prototype-based</li>
+                  <li>
+                    Modern JS supports classes, modules, async/await, etc.
+                  </li>
+                </ul>
               </div>
-              <span class="pill">Standard</span>
-            </div>
-            <div class="titem">
-              <div class="txt">
-                <b>2009 — Node.js</b>
-                <p>JavaScript goes beyond the browser: servers, CLIs, tools.</p>
-              </div>
-              <span class="pill">Server</span>
-            </div>
-            <div class="titem">
-              <div class="txt">
-                <b>2015+ — Modern JS (ES6+)</b>
-                <p>Modules, classes, arrow functions, promises, async/await—JS becomes “serious engineering”.</p>
-              </div>
-              <span class="pill">ES6+</span>
-            </div>
-            <div class="titem">
-              <div class="txt">
-                <b>TypeScript era</b>
-                <p>Teams adopt TypeScript for large apps (types, tooling, fewer bugs).</p>
-              </div>
-              <span class="pill">TS</span>
             </div>
           </div>
-        </div>
-      </article>
+        </article>
 
-      <!-- IMPORTANCE -->
-      <article class="card">
-        <div class="hd">
-          <p class="kicker">3) Importance</p>
-          <h2>Why JavaScript is worth learning</h2>
-        </div>
-        <div class="bd">
-          <div class="cols">
-            <div>
-              <p class="muted"><b>JS is everywhere:</b></p>
-              <ul>
-                <li>Every modern website needs JS</li>
-                <li>Most UI frameworks are JS-based</li>
-                <li>Data fetching + APIs + real-time apps</li>
-                <li>Huge ecosystem + libraries</li>
-              </ul>
-            </div>
-            <div>
-              <p class="muted"><b>It makes you build fast:</b></p>
-              <ul>
-                <li>UI components, dashboards, admin panels</li>
-                <li>Mini tools (calculators, quizzes, planners)</li>
-                <li>APIs + database + authentication</li>
-                <li>Mobile apps via React Native</li>
-              </ul>
+        <!-- HISTORY -->
+        <article class="card">
+          <div class="hd">
+            <p class="kicker">2) History</p>
+            <h2>How JavaScript evolved (quick timeline)</h2>
+          </div>
+          <div class="bd">
+            <p class="muted">
+              You don’t need to memorize dates—just understand the evolution.
+            </p>
+            <div class="timeline">
+              <div class="titem">
+                <div class="txt">
+                  <b>1995 — Birth</b>
+                  <p>
+                    Created for the browser to add interactivity to web pages.
+                  </p>
+                </div>
+                <span class="pill">Browser</span>
+              </div>
+              <div class="titem">
+                <div class="txt">
+                  <b>1997 — ECMAScript</b>
+                  <p>
+                    Standardized as <b>ECMAScript</b>. JavaScript is the most
+                    famous implementation.
+                  </p>
+                </div>
+                <span class="pill">Standard</span>
+              </div>
+              <div class="titem">
+                <div class="txt">
+                  <b>2009 — Node.js</b>
+                  <p>
+                    JavaScript goes beyond the browser: servers, CLIs, tools.
+                  </p>
+                </div>
+                <span class="pill">Server</span>
+              </div>
+              <div class="titem">
+                <div class="txt">
+                  <b>2015+ — Modern JS (ES6+)</b>
+                  <p>
+                    Modules, classes, arrow functions, promises, async/await—JS
+                    becomes “serious engineering”.
+                  </p>
+                </div>
+                <span class="pill">ES6+</span>
+              </div>
+              <div class="titem">
+                <div class="txt">
+                  <b>TypeScript era</b>
+                  <p>
+                    Teams adopt TypeScript for large apps (types, tooling, fewer
+                    bugs).
+                  </p>
+                </div>
+                <span class="pill">TS</span>
+              </div>
             </div>
           </div>
-        </div>
-      </article>
+        </article>
 
-      <!-- JOB PROSPECTS -->
-      <article class="card">
-        <div class="hd">
-          <p class="kicker">4) Job prospects</p>
-          <h2>Roles you can target with JavaScript</h2>
-        </div>
-        <div class="bd">
-          <div class="cols">
-            <div>
-              <p class="muted"><b>Core roles:</b></p>
-              <ul>
-                <li><b>Frontend Developer</b> (UI + performance + UX)</li>
-                <li><b>Backend Developer</b> with Node.js (APIs, auth, DB)</li>
-                <li><b>Full-Stack Developer</b> (frontend + backend)</li>
-                <li><b>Web App Engineer</b> (large apps, architecture)</li>
-              </ul>
-            </div>
-            <div>
-              <p class="muted"><b>Adjacent roles:</b></p>
-              <ul>
-                <li><b>QA / Test Engineer</b> (Playwright/Cypress automation)</li>
-                <li><b>DevTools / Tooling</b> (CLIs, build systems)</li>
-                <li><b>UI Engineer</b> (design systems, components)</li>
-                <li><b>Mobile</b> (React Native)</li>
-              </ul>
+        <!-- IMPORTANCE -->
+        <article class="card">
+          <div class="hd">
+            <p class="kicker">3) Importance</p>
+            <h2>Why JavaScript is worth learning</h2>
+          </div>
+          <div class="bd">
+            <div class="cols">
+              <div>
+                <p class="muted"><b>JS is everywhere:</b></p>
+                <ul>
+                  <li>Every modern website needs JS</li>
+                  <li>Most UI frameworks are JS-based</li>
+                  <li>Data fetching + APIs + real-time apps</li>
+                  <li>Huge ecosystem + libraries</li>
+                </ul>
+              </div>
+              <div>
+                <p class="muted"><b>It makes you build fast:</b></p>
+                <ul>
+                  <li>UI components, dashboards, admin panels</li>
+                  <li>Mini tools (calculators, quizzes, planners)</li>
+                  <li>APIs + database + authentication</li>
+                  <li>Mobile apps via React Native</li>
+                </ul>
+              </div>
             </div>
           </div>
-        </div>
-      </article>
+        </article>
 
-      <!-- SPINOFFS -->
-      <article class="card">
-        <div class="hd">
-          <p class="kicker">5) Spinoffs (ecosystem)</p>
-          <h2>React, Vue, Angular, Node, TypeScript… what are these?</h2>
-        </div>
-        <div class="bd">
-          <p class="muted">
-            These are <b>tools built around JavaScript</b>. You don’t start with them blindly—you start with JS fundamentals.
-          </p>
-          <div class="cols">
-            <div>
-              <p class="muted"><b>Frontend frameworks:</b></p>
-              <ul>
-                <li><b>React</b> — component-based UI</li>
-                <li><b>Vue</b> — friendly, progressive framework</li>
-                <li><b>Angular</b> — full framework, enterprise-heavy</li>
-                <li><b>Svelte</b> — compile-time approach</li>
-              </ul>
-            </div>
-            <div>
-              <p class="muted"><b>Beyond the browser:</b></p>
-              <ul>
-                <li><b>Node.js</b> — servers + tools + CLIs</li>
-                <li><b>TypeScript</b> — JS + types for large apps</li>
-                <li><b>Next.js / Nuxt</b> — SSR + full-stack web</li>
-                <li><b>React Native</b> — mobile apps with JS</li>
-              </ul>
+        <!-- JOB PROSPECTS -->
+        <article class="card">
+          <div class="hd">
+            <p class="kicker">4) Job prospects</p>
+            <h2>Roles you can target with JavaScript</h2>
+          </div>
+          <div class="bd">
+            <div class="cols">
+              <div>
+                <p class="muted"><b>Core roles:</b></p>
+                <ul>
+                  <li><b>Frontend Developer</b> (UI + performance + UX)</li>
+                  <li>
+                    <b>Backend Developer</b> with Node.js (APIs, auth, DB)
+                  </li>
+                  <li><b>Full-Stack Developer</b> (frontend + backend)</li>
+                  <li><b>Web App Engineer</b> (large apps, architecture)</li>
+                </ul>
+              </div>
+              <div>
+                <p class="muted"><b>Adjacent roles:</b></p>
+                <ul>
+                  <li>
+                    <b>QA / Test Engineer</b> (Playwright/Cypress automation)
+                  </li>
+                  <li><b>DevTools / Tooling</b> (CLIs, build systems)</li>
+                  <li><b>UI Engineer</b> (design systems, components)</li>
+                  <li><b>Mobile</b> (React Native)</li>
+                </ul>
+              </div>
             </div>
           </div>
-        </div>
-      </article>
+        </article>
 
-      <!-- HELLO WORLD -->
-      <article class="card">
-        <div class="hd">
-          <p class="kicker">6) Hello World</p>
-          <h2>Your first JavaScript — 3 classic ways</h2>
-        </div>
-        <div class="bd">
-          <p class="muted"><b>A) Console</b></p>
-          <pre><code>// Open DevTools → Console:
+        <!-- SPINOFFS -->
+        <article class="card">
+          <div class="hd">
+            <p class="kicker">5) Spinoffs (ecosystem)</p>
+            <h2>React, Vue, Angular, Node, TypeScript… what are these?</h2>
+          </div>
+          <div class="bd">
+            <p class="muted">
+              These are <b>tools built around JavaScript</b>. You don’t start
+              with them blindly—you start with JS fundamentals.
+            </p>
+            <div class="cols">
+              <div>
+                <p class="muted"><b>Frontend frameworks:</b></p>
+                <ul>
+                  <li><b>React</b> — component-based UI</li>
+                  <li><b>Vue</b> — friendly, progressive framework</li>
+                  <li><b>Angular</b> — full framework, enterprise-heavy</li>
+                  <li><b>Svelte</b> — compile-time approach</li>
+                </ul>
+              </div>
+              <div>
+                <p class="muted"><b>Beyond the browser:</b></p>
+                <ul>
+                  <li><b>Node.js</b> — servers + tools + CLIs</li>
+                  <li><b>TypeScript</b> — JS + types for large apps</li>
+                  <li><b>Next.js / Nuxt</b> — SSR + full-stack web</li>
+                  <li><b>React Native</b> — mobile apps with JS</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- HELLO WORLD -->
+        <article class="card">
+          <div class="hd">
+            <p class="kicker">6) Hello World</p>
+            <h2>Your first JavaScript — 3 classic ways</h2>
+          </div>
+          <div class="bd">
+            <p class="muted"><b>A) Console</b></p>
+            <pre><code>// Open DevTools → Console:
 console.log("Hello, JavaScript!");</code></pre>
 
-          <p class="muted" style="margin-top:14px"><b>B) Alert</b></p>
-          <pre><code>alert("Hello, JavaScript!");</code></pre>
+            <p class="muted" style="margin-top: 14px"><b>B) Alert</b></p>
+            <pre><code>alert("Hello, JavaScript!");</code></pre>
 
-          <p class="muted" style="margin-top:14px"><b>C) DOM</b></p>
-          <pre><code>&lt;h3 id="msg"&gt;...&lt;/h3&gt;
+            <p class="muted" style="margin-top: 14px"><b>C) DOM</b></p>
+            <pre><code>&lt;h3 id="msg"&gt;...&lt;/h3&gt;
 &lt;script&gt;
   document.getElementById("msg").textContent = "Hello, JavaScript!";
 &lt;/script&gt;</code></pre>
 
-          <p class="muted" style="margin-top:12px">
-            Now practice using the toggle editors below (HTML Preview ↔ JavaScript).
-          </p>
-        </div>
-      </article>
-
-      <!-- TOGGLE EDITORS (HTML + JS) -->
-      <article class="card" id="editorsCard">
-        <div class="hd">
-          <p class="kicker">Practice</p>
-          <h2>Toggle Editors: HTML Preview ↔ JavaScript</h2>
-        </div>
-        <div class="bd">
-          <p class="muted">
-            Start with HTML Preview to create a button + message, then switch to JS editor for function practice.
-          </p>
-
-          <div class="toggleBar" id="editors">
-            <div class="row">
-              <span class="pill" id="activeLabel">🧩 HTML Preview Editor</span>
-              <span class="muted" id="activeHint">Build a mini page and test interactions fast.</span>
-            </div>
-
-            <div class="row">
-              <div class="seg" role="tablist" aria-label="Editor toggle">
-                <button id="tabHtml" class="active" type="button" role="tab" aria-selected="true">🧩 HTML Preview</button>
-                <button id="tabJs" type="button" role="tab" aria-selected="false">🧪 JavaScript</button>
-              </div>
-              <a class="btn" id="btnOpenNew" href="https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html" target="_blank" rel="noopener">Open ↗</a>
-            </div>
+            <p class="muted" style="margin-top: 12px">
+              Now practice using the toggle editors below (HTML Preview ↔
+              JavaScript).
+            </p>
           </div>
+        </article>
 
-          <!-- HTML Preview Editor -->
-          <div class="embedWrap" id="panelHtml" role="tabpanel" aria-label="HTML Preview Editor">
-            <div class="embedTop">
+        <!-- TOGGLE EDITORS (HTML + JS) -->
+        <article class="card" id="editorsCard">
+          <div class="hd">
+            <p class="kicker">Practice</p>
+            <h2>Toggle Editors: HTML Preview ↔ JavaScript</h2>
+          </div>
+          <div class="bd">
+            <p class="muted">
+              Start with HTML Preview to create a button + message, then switch
+              to JS editor for function practice.
+            </p>
+
+            <div class="toggleBar" id="editors">
+              <div class="row">
+                <span class="pill" id="activeLabel"
+                  >🧩 HTML Preview Editor</span
+                >
+                <span class="muted" id="activeHint"
+                  >Build a mini page and test interactions fast.</span
+                >
+              </div>
+
+              <div class="row">
+                <div class="seg" role="tablist" aria-label="Editor toggle">
+                  <button
+                    id="tabHtml"
+                    class="active"
+                    type="button"
+                    role="tab"
+                    aria-selected="true"
+                  >
+                    🧩 HTML Preview
+                  </button>
+                  <button
+                    id="tabJs"
+                    type="button"
+                    role="tab"
+                    aria-selected="false"
+                  >
+                    🧪 JavaScript
+                  </button>
+                </div>
+                <a
+                  class="btn"
+                  id="btnOpenNew"
+                  href="https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html"
+                  target="_blank"
+                  rel="noopener"
+                  >Open ↗</a
+                >
+              </div>
+            </div>
+
+            <!-- HTML Preview Editor -->
+            <div
+              class="embedWrap"
+              id="panelHtml"
+              role="tabpanel"
+              aria-label="HTML Preview Editor"
+            >
+              <div class="embedTop">
+                <div>
+                  <div class="pill">🧩 HTML Preview Editor</div>
+                  <p class="sub">Perfect for quick UI + DOM experiments.</p>
+                </div>
+              </div>
+              <iframe
+                class="ppEditor"
+                title="Programmer’s Picnic HTML Preview Editor"
+                src="https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html"
+                loading="eager"
+                allow="clipboard-read; clipboard-write; fullscreen"
+                allowfullscreen
+              ></iframe>
+            </div>
+
+            <!-- JavaScript Editor -->
+            <div
+              class="embedWrap hidden"
+              id="panelJs"
+              role="tabpanel"
+              aria-label="JavaScript Editor"
+            >
+              <div class="embedTop">
+                <div>
+                  <div class="pill">🧪 JavaScript Editor</div>
+                  <p class="sub">
+                    Practice console logs, functions, and small experiments.
+                  </p>
+                </div>
+              </div>
+              <iframe
+                class="ppEditor"
+                title="Programmer’s Picnic JavaScript Editor"
+                src="https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/"
+                loading="eager"
+                allow="clipboard-read; clipboard-write; fullscreen"
+                allowfullscreen
+              ></iframe>
+            </div>
+
+            <p class="muted" style="margin-top: 12px">
+              Tip: Use DevTools Console on this page too. Toggle choice is saved
+              in <span class="kbd">localStorage</span>.
+            </p>
+          </div>
+        </article>
+
+        <!-- WHAT'S NEXT -->
+        <article class="card">
+          <div class="hd">
+            <p class="kicker">What’s next</p>
+            <h2>Day 1 preview</h2>
+          </div>
+          <div class="bd">
+            <div class="cols">
               <div>
-                <div class="pill">🧩 HTML Preview Editor</div>
-                <p class="sub">Perfect for quick UI + DOM experiments.</p>
+                <p class="muted"><b>We’ll learn:</b></p>
+                <ul>
+                  <li>
+                    Variables: <b>let</b>, <b>const</b>, and why <b>var</b> is
+                    tricky
+                  </li>
+                  <li>Data types: string, number, boolean, null, undefined</li>
+                  <li>Operators: +, -, *, /, %, ===</li>
+                  <li>Basic I/O: prompt, alert, console</li>
+                </ul>
               </div>
-            </div>
-            <iframe
-              class="ppEditor"
-              title="Programmer’s Picnic HTML Preview Editor"
-              src="https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html"
-              loading="eager"
-              allow="clipboard-read; clipboard-write; fullscreen"
-              allowfullscreen
-            ></iframe>
-          </div>
-
-          <!-- JavaScript Editor -->
-          <div class="embedWrap hidden" id="panelJs" role="tabpanel" aria-label="JavaScript Editor">
-            <div class="embedTop">
               <div>
-                <div class="pill">🧪 JavaScript Editor</div>
-                <p class="sub">Practice console logs, functions, and small experiments.</p>
+                <p class="muted"><b>Your mini assignment:</b></p>
+                <ul>
+                  <li>Print your name in the console</li>
+                  <li>Create a variable for age and log it</li>
+                  <li>Make a button that changes text on the page</li>
+                </ul>
               </div>
             </div>
-            <iframe
-              class="ppEditor"
-              title="Programmer’s Picnic JavaScript Editor"
-              src="https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/"
-              loading="eager"
-              allow="clipboard-read; clipboard-write; fullscreen"
-              allowfullscreen
-            ></iframe>
           </div>
+        </article>
+      </section>
 
-          <p class="muted" style="margin-top:12px">
-            Tip: Use DevTools Console on this page too. Toggle choice is saved in <span class="kbd">localStorage</span>.
-          </p>
+      <section class="footer">
+        <div>
+          <b>Quick tip:</b> In Chrome, press <span class="kbd">Ctrl</span> +
+          <span class="kbd">Shift</span> + <span class="kbd">I</span> to open
+          DevTools.
         </div>
-      </article>
-
-      <!-- WHAT'S NEXT -->
-      <article class="card">
-        <div class="hd">
-          <p class="kicker">What’s next</p>
-          <h2>Day 1 preview</h2>
+        <div class="row">
+          <span class="pill">Day 0 Complete ✅</span>
         </div>
-        <div class="bd">
-          <div class="cols">
-            <div>
-              <p class="muted"><b>We’ll learn:</b></p>
-              <ul>
-                <li>Variables: <b>let</b>, <b>const</b>, and why <b>var</b> is tricky</li>
-                <li>Data types: string, number, boolean, null, undefined</li>
-                <li>Operators: +, -, *, /, %, ===</li>
-                <li>Basic I/O: prompt, alert, console</li>
-              </ul>
-            </div>
-            <div>
-              <p class="muted"><b>Your mini assignment:</b></p>
-              <ul>
-                <li>Print your name in the console</li>
-                <li>Create a variable for age and log it</li>
-                <li>Make a button that changes text on the page</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </article>
-    </section>
+      </section>
+    </main>
 
-    <section class="footer">
-      <div>
-        <b>Quick tip:</b> In Chrome, press <span class="kbd">Ctrl</span> + <span class="kbd">Shift</span> + <span class="kbd">I</span> to open DevTools.
-      </div>
-      <div class="row">
-        <span class="pill">Day 0 Complete ✅</span>
-      </div>
-    </section>
-  </main>
+    <script>
+      const $ = (id) => document.getElementById(id);
 
-  <script>
-    const $ = (id) => document.getElementById(id);
+      $("btnPrint").addEventListener("click", () => window.print());
+      $("btnJumpEditors").addEventListener("click", () => {
+        document
+          .getElementById("editorsCard")
+          .scrollIntoView({ behavior: "smooth", block: "start" });
+      });
 
-    $("btnPrint").addEventListener("click", () => window.print());
-    $("btnJumpEditors").addEventListener("click", () => {
-      document.getElementById("editorsCard").scrollIntoView({ behavior: "smooth", block: "start" });
-    });
+      const tabs = {
+        html: {
+          tab: $("tabHtml"),
+          panel: $("panelHtml"),
+          label: "🧩 HTML Preview Editor",
+          hint: "Build a mini page and test interactions fast.",
+          url: "https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html",
+        },
+        js: {
+          tab: $("tabJs"),
+          panel: $("panelJs"),
+          label: "🧪 JavaScript Editor",
+          hint: "Practice console logs, functions, and small experiments.",
+          url: "https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/",
+        },
+      };
 
-    const tabs = {
-      html: {
-        tab: $("tabHtml"),
-        panel: $("panelHtml"),
-        label: "🧩 HTML Preview Editor",
-        hint: "Build a mini page and test interactions fast.",
-        url: "https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html"
-      },
-      js: {
-        tab: $("tabJs"),
-        panel: $("panelJs"),
-        label: "🧪 JavaScript Editor",
-        hint: "Practice console logs, functions, and small experiments.",
-        url: "https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/"
+      function setActive(key) {
+        const a = tabs[key];
+        const b = key === "html" ? tabs.js : tabs.html;
+
+        a.tab.classList.add("active");
+        a.tab.setAttribute("aria-selected", "true");
+        a.panel.classList.remove("hidden");
+
+        b.tab.classList.remove("active");
+        b.tab.setAttribute("aria-selected", "false");
+        b.panel.classList.add("hidden");
+
+        $("activeLabel").textContent = a.label;
+        $("activeHint").textContent = a.hint;
+        $("btnOpenNew").href = a.url;
+
+        localStorage.setItem("pp_day0_editor", key);
       }
-    };
 
-    function setActive(key){
-      const a = tabs[key];
-      const b = key === "html" ? tabs.js : tabs.html;
+      tabs.html.tab.addEventListener("click", () => setActive("html"));
+      tabs.js.tab.addEventListener("click", () => setActive("js"));
 
-      a.tab.classList.add("active");
-      a.tab.setAttribute("aria-selected","true");
-      a.panel.classList.remove("hidden");
-
-      b.tab.classList.remove("active");
-      b.tab.setAttribute("aria-selected","false");
-      b.panel.classList.add("hidden");
-
-      $("activeLabel").textContent = a.label;
-      $("activeHint").textContent = a.hint;
-      $("btnOpenNew").href = a.url;
-
-      localStorage.setItem("pp_day0_editor", key);
-    }
-
-    tabs.html.tab.addEventListener("click", () => setActive("html"));
-    tabs.js.tab.addEventListener("click", () => setActive("js"));
-
-    setActive(localStorage.getItem("pp_day0_editor") === "js" ? "js" : "html");
-  </script>
-</body>
+      setActive(
+        localStorage.getItem("pp_day0_editor") === "js" ? "js" : "html",
+      );
+    </script>
+  </body>
 </html>
