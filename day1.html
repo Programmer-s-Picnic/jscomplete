@@ -1,296 +1,672 @@
-
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<meta name="theme-color" content="#d97706"/>
-<title>Day 1 — Debugging & Testing (Console + Diagrams)</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#d97706" />
+    <title>Day 1 — Debugging & Testing (Console + Diagrams)</title>
 
-<style>
-:root{
-  --bg0:#fff7e6; --bg1:#fff1d6;
-  --card:rgba(255,255,255,.9);
-  --ink:#1f2937; --muted:#6b7280;
-  --brand:#d97706; --brand2:#f59e0b;
-  --border:rgba(31,41,55,.12);
-  --shadow:0 14px 40px rgba(17,24,39,.10);
-  --ring:0 0 0 4px rgba(217,119,6,.18);
-  --r2:24px;
-  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-  color:var(--ink);
-  background:
-    radial-gradient(1100px 520px at 12% 0%, rgba(245,158,11,.22), transparent 60%),
-    radial-gradient(900px 420px at 92% 18%, rgba(217,119,6,.18), transparent 55%),
-    linear-gradient(180deg,var(--bg0),var(--bg1));
-}
-.wrap{max-width:1100px;margin:0 auto;padding:16px 14px 64px}
-.hero{
-  border:1px solid var(--border);
-  border-radius:var(--r2);
-  background:rgba(255,255,255,.85);
-  box-shadow:var(--shadow);
-  padding:20px;
-}
-h1{margin:0 0 8px;font-size:clamp(26px,3.5vw,42px)}
-.sub{margin:0;color:var(--muted);font-weight:650;line-height:1.45}
-.pill{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:6px 10px;border-radius:999px;
-  border:1px solid rgba(217,119,6,.25);
-  background:rgba(255,255,255,.7);
-  font-weight:900;color:#92400e;
-}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.spread{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+    <style>
+      :root {
+        --bg0: #fff7e6;
+        --bg1: #fff1d6;
+        --card: rgba(255, 255, 255, 0.9);
+        --ink: #1f2937;
+        --muted: #6b7280;
+        --brand: #d97706;
+        --brand2: #f59e0b;
+        --border: rgba(31, 41, 55, 0.12);
+        --shadow: 0 14px 40px rgba(17, 24, 39, 0.1);
+        --ring: 0 0 0 4px rgba(217, 119, 6, 0.18);
+        --r2: 24px;
+        --mono:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family:
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Arial;
+        color: var(--ink);
+        background:
+          radial-gradient(
+            1100px 520px at 12% 0%,
+            rgba(245, 158, 11, 0.22),
+            transparent 60%
+          ),
+          radial-gradient(
+            900px 420px at 92% 18%,
+            rgba(217, 119, 6, 0.18),
+            transparent 55%
+          ),
+          linear-gradient(180deg, var(--bg0), var(--bg1));
+      }
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 16px 14px 64px;
+      }
+      .hero {
+        border: 1px solid var(--border);
+        border-radius: var(--r2);
+        background: rgba(255, 255, 255, 0.85);
+        box-shadow: var(--shadow);
+        padding: 20px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(26px, 3.5vw, 42px);
+      }
+      .sub {
+        margin: 0;
+        color: var(--muted);
+        font-weight: 650;
+        line-height: 1.45;
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(217, 119, 6, 0.25);
+        background: rgba(255, 255, 255, 0.7);
+        font-weight: 900;
+        color: #92400e;
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .spread {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+      }
 
-.card{
-  margin-top:16px;
-  border:1px solid var(--border);
-  border-radius:var(--r2);
-  background:var(--card);
-  box-shadow:var(--shadow);
-  overflow:hidden;
-}
-.card .hd{
-  padding:14px 18px;
-  border-bottom:1px solid rgba(31,41,55,.10);
-  background:
-    radial-gradient(900px 360px at 10% 0%, rgba(245,158,11,.18), transparent 55%);
-}
-.card .bd{padding:18px}
-h2{margin:0;font-size:18px;letter-spacing:-.2px}
-p{margin:10px 0 0;line-height:1.55}
-.muted{color:var(--muted);font-weight:650}
-ul{margin:10px 0 0;padding-left:18px}
-li{margin:8px 0}
+      .card {
+        margin-top: 16px;
+        border: 1px solid var(--border);
+        border-radius: var(--r2);
+        background: var(--card);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .card .hd {
+        padding: 14px 18px;
+        border-bottom: 1px solid rgba(31, 41, 55, 0.1);
+        background: radial-gradient(
+          900px 360px at 10% 0%,
+          rgba(245, 158, 11, 0.18),
+          transparent 55%
+        );
+      }
+      .card .bd {
+        padding: 18px;
+      }
+      h2 {
+        margin: 0;
+        font-size: 18px;
+        letter-spacing: -0.2px;
+      }
+      p {
+        margin: 10px 0 0;
+        line-height: 1.55;
+      }
+      .muted {
+        color: var(--muted);
+        font-weight: 650;
+      }
+      ul {
+        margin: 10px 0 0;
+        padding-left: 18px;
+      }
+      li {
+        margin: 8px 0;
+      }
 
-.kbd{
-  font-family:var(--mono);
-  font-size:12px;
-  background:rgba(17,24,39,.06);
-  border:1px solid rgba(31,41,55,.12);
-  padding:2px 6px;
-  border-radius:8px;
-  white-space:nowrap;
-}
-pre, code{
-  font-family:var(--mono);
-  background:rgba(17,24,39,.06);
-  border:1px solid rgba(31,41,55,.12);
-  border-radius:14px;
-}
-pre{padding:12px;overflow:auto;margin:12px 0 0;font-size:13px;line-height:1.45}
+      .kbd {
+        font-family: var(--mono);
+        font-size: 12px;
+        background: rgba(17, 24, 39, 0.06);
+        border: 1px solid rgba(31, 41, 55, 0.12);
+        padding: 2px 6px;
+        border-radius: 8px;
+        white-space: nowrap;
+      }
+      pre,
+      code {
+        font-family: var(--mono);
+        background: rgba(17, 24, 39, 0.06);
+        border: 1px solid rgba(31, 41, 55, 0.12);
+        border-radius: 14px;
+      }
+      pre {
+        padding: 12px;
+        overflow: auto;
+        margin: 12px 0 0;
+        font-size: 13px;
+        line-height: 1.45;
+      }
 
-.task{
-  background:rgba(245,158,11,.12);
-  border:1px solid rgba(217,119,6,.25);
-  border-radius:16px;
-  padding:12px;
-  margin-top:12px;
-  font-weight:750;
-  color:#92400e;
-}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
-@media(max-width:960px){.grid2{grid-template-columns:1fr}}
-.svgCard{
-  border:1px solid rgba(31,41,55,.12);
-  border-radius:18px;
-  background:rgba(255,255,255,.78);
-  padding:12px;
-}
-.svgTitle{margin:0 0 8px;font-weight:900;color:#92400e}
-.svgWrap{width:100%;overflow:auto}
-svg{max-width:100%;height:auto;display:block}
+      .task {
+        background: rgba(245, 158, 11, 0.12);
+        border: 1px solid rgba(217, 119, 6, 0.25);
+        border-radius: 16px;
+        padding: 12px;
+        margin-top: 12px;
+        font-weight: 750;
+        color: #92400e;
+      }
+      .grid2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 12px;
+      }
+      @media (max-width: 960px) {
+        .grid2 {
+          grid-template-columns: 1fr;
+        }
+      }
+      .svgCard {
+        border: 1px solid rgba(31, 41, 55, 0.12);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.78);
+        padding: 12px;
+      }
+      .svgTitle {
+        margin: 0 0 8px;
+        font-weight: 900;
+        color: #92400e;
+      }
+      .svgWrap {
+        width: 100%;
+        overflow: auto;
+      }
+      svg {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
 
-.toggleBar{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-top:12px;gap:12px;flex-wrap:wrap;
-  padding:10px;
-  border:1px solid rgba(31,41,55,.12);
-  border-radius:18px;
-  background:rgba(255,255,255,.72);
-}
-.seg{
-  display:flex;border:1px solid var(--border);
-  border-radius:999px;overflow:hidden;background:white;
-}
-.seg button{
-  border:0;background:transparent;padding:10px 14px;
-  cursor:pointer;font-weight:950;
-}
-.seg button.active{
-  background:linear-gradient(135deg, rgba(217,119,6,.14), rgba(245,158,11,.18));
-  color:#92400e;
-}
-.embedWrap{
-  border:1px solid var(--border);
-  border-radius:22px;
-  overflow:hidden;
-  background:rgba(255,255,255,.72);
-  box-shadow:var(--shadow);
-  margin-top:12px;
-}
-.embedTop{
-  padding:10px 12px;
-  display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;
-  border-bottom:1px solid rgba(31,41,55,.10);
-  background:
-    radial-gradient(900px 360px at 10% 0%, rgba(245,158,11,.18), transparent 55%),
-    radial-gradient(800px 320px at 92% 10%, rgba(217,119,6,.14), transparent 55%);
-}
-iframe{width:100%;height:720px;border:0;background:white}
-@media(max-width:700px){iframe{height:780px}}
-.hidden{display:none !important}
+      .toggleBar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 12px;
+        gap: 12px;
+        flex-wrap: wrap;
+        padding: 10px;
+        border: 1px solid rgba(31, 41, 55, 0.12);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.72);
+      }
+      .seg {
+        display: flex;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        overflow: hidden;
+        background: white;
+      }
+      .seg button {
+        border: 0;
+        background: transparent;
+        padding: 10px 14px;
+        cursor: pointer;
+        font-weight: 950;
+      }
+      .seg button.active {
+        background: linear-gradient(
+          135deg,
+          rgba(217, 119, 6, 0.14),
+          rgba(245, 158, 11, 0.18)
+        );
+        color: #92400e;
+      }
+      .embedWrap {
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.72);
+        box-shadow: var(--shadow);
+        margin-top: 12px;
+      }
+      .embedTop {
+        padding: 10px 12px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(31, 41, 55, 0.1);
+        background:
+          radial-gradient(
+            900px 360px at 10% 0%,
+            rgba(245, 158, 11, 0.18),
+            transparent 55%
+          ),
+          radial-gradient(
+            800px 320px at 92% 10%,
+            rgba(217, 119, 6, 0.14),
+            transparent 55%
+          );
+      }
+      iframe {
+        width: 100%;
+        height: 720px;
+        border: 0;
+        background: white;
+      }
+      @media (max-width: 700px) {
+        iframe {
+          height: 780px;
+        }
+      }
+      .hidden {
+        display: none !important;
+      }
 
-.smallNote{margin-top:10px;color:var(--muted);font-weight:650;font-size:13px}
-.btn{
-  border:1px solid var(--border);
-  background:white;
-  color:var(--ink);
-  padding:10px 12px;
-  border-radius:14px;
-  box-shadow:0 6px 18px rgba(17,24,39,.06);
-  cursor:pointer;
-  font-weight:900;
-}
-.btn.primary{
-  border-color:rgba(217,119,6,.35);
-  background:linear-gradient(135deg, rgba(217,119,6,.12), rgba(245,158,11,.16));
-}
-.btn:focus-visible{outline:none;box-shadow:var(--shadow),var(--ring)}
-</style>
-</head>
+      .smallNote {
+        margin-top: 10px;
+        color: var(--muted);
+        font-weight: 650;
+        font-size: 13px;
+      }
+      .btn {
+        border: 1px solid var(--border);
+        background: white;
+        color: var(--ink);
+        padding: 10px 12px;
+        border-radius: 14px;
+        box-shadow: 0 6px 18px rgba(17, 24, 39, 0.06);
+        cursor: pointer;
+        font-weight: 900;
+      }
+      .btn.primary {
+        border-color: rgba(217, 119, 6, 0.35);
+        background: linear-gradient(
+          135deg,
+          rgba(217, 119, 6, 0.12),
+          rgba(245, 158, 11, 0.16)
+        );
+      }
+      .btn:focus-visible {
+        outline: none;
+        box-shadow: var(--shadow), var(--ring);
+      }
+    </style>
+  </head>
 
-<body>
-<div class="wrap">
-
-  <section class="hero">
-    <div class="spread">
-      <div>
-        <div class="pill">🟠 Programmer’s Picnic • JavaScript Champion</div>
-        <h1>Day 1 — Debugging & Testing in the Browser</h1>
-        <p class="sub">
-          Today you’ll master the <b>Console</b>, <b>Breakpoints</b>, and basic <b>testing habits</b>.
-          You’ll also practice using our <b>HTML Preview</b> and <b>JavaScript</b> editors (toggle).
+  <body>
+    <div class="wrap">
+      <section class="hero">
+        <div class="spread">
+          <div>
+            <div class="pill">🟠 Programmer’s Picnic • JavaScript Champion</div>
+            <h1>Day 1 — Debugging & Testing in the Browser</h1>
+            <p class="sub">
+              Today you’ll master the <b>Console</b>, <b>Breakpoints</b>, and
+              basic <b>testing habits</b>. You’ll also practice using our
+              <b>HTML Preview</b> and <b>JavaScript</b> editors (toggle).
+            </p>
+          </div>
+          <div class="row">
+            <button class="btn primary" id="btnJumpConsole" type="button">
+              🧭 Console Guide
+            </button>
+            <button class="btn" id="btnJumpEditors" type="button">
+              🧪 Editors
+            </button>
+            <button class="btn" id="btnPrint" type="button">🖨️ Print</button>
+          </div>
+        </div>
+        <p class="smallNote">
+          DevTools shortcut: <span class="kbd">Ctrl</span> +
+          <span class="kbd">Shift</span> + <span class="kbd">I</span> (or
+          <span class="kbd">F12</span>). Console tab shortcut:
+          <span class="kbd">Esc</span> (drawer) or click “Console”.
         </p>
-      </div>
-      <div class="row">
-        <button class="btn primary" id="btnJumpConsole" type="button">🧭 Console Guide</button>
-        <button class="btn" id="btnJumpEditors" type="button">🧪 Editors</button>
-        <button class="btn" id="btnPrint" type="button">🖨️ Print</button>
-      </div>
-    </div>
-    <p class="smallNote">
-      DevTools shortcut: <span class="kbd">Ctrl</span> + <span class="kbd">Shift</span> + <span class="kbd">I</span>
-      (or <span class="kbd">F12</span>). Console tab shortcut: <span class="kbd">Esc</span> (drawer) or click “Console”.
-    </p>
-  </section>
+      </section>
 
-  <!-- CONSOLE OPEN + DIAGRAMS -->
-  <section class="card" id="consoleGuide">
-    <div class="hd">
-      <h2>1️⃣ How to open the Console (with diagrams)</h2>
-    </div>
-    <div class="bd">
-      <p class="muted">
-        The Console is where you can see logs, errors, warnings, and also run JavaScript directly.
-      </p>
-
-      <div class="grid2">
-        <div class="svgCard">
-          <div class="svgTitle">Diagram A — Where DevTools lives</div>
-          <div class="svgWrap">
-            <svg viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DevTools location diagram">
-              <defs>
-                <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0" stop-color="#fff7e6"/>
-                  <stop offset="1" stop-color="#fff1d6"/>
-                </linearGradient>
-              </defs>
-              <rect x="10" y="10" width="740" height="340" rx="22" fill="url(#g1)" stroke="rgba(31,41,55,.18)"/>
-              <rect x="40" y="52" width="470" height="270" rx="18" fill="#fff" stroke="rgba(31,41,55,.18)"/>
-              <rect x="530" y="52" width="180" height="270" rx="18" fill="#fff" stroke="rgba(31,41,55,.18)"/>
-              <rect x="40" y="20" width="670" height="24" rx="12" fill="rgba(245,158,11,.18)" stroke="rgba(217,119,6,.22)"/>
-              <text x="55" y="37" font-family="system-ui" font-weight="900" font-size="12" fill="#92400e">Browser Window</text>
-
-              <text x="60" y="82" font-family="system-ui" font-weight="900" font-size="14" fill="#1f2937">Your Website</text>
-              <text x="545" y="82" font-family="system-ui" font-weight="900" font-size="14" fill="#1f2937">DevTools</text>
-
-              <rect x="545" y="98" width="150" height="28" rx="12" fill="rgba(245,158,11,.14)" stroke="rgba(217,119,6,.22)"/>
-              <text x="557" y="117" font-family="system-ui" font-weight="900" font-size="12" fill="#92400e">Tabs</text>
-              <text x="557" y="143" font-family="system-ui" font-weight="800" font-size="12" fill="#6b7280">Elements</text>
-              <text x="557" y="163" font-family="system-ui" font-weight="800" font-size="12" fill="#6b7280">Console ✅</text>
-              <text x="557" y="183" font-family="system-ui" font-weight="800" font-size="12" fill="#6b7280">Sources</text>
-              <text x="557" y="203" font-family="system-ui" font-weight="800" font-size="12" fill="#6b7280">Network</text>
-              <text x="557" y="223" font-family="system-ui" font-weight="800" font-size="12" fill="#6b7280">Application</text>
-
-              <path d="M 430 270 C 500 310, 560 310, 610 270" fill="none" stroke="rgba(217,119,6,.7)" stroke-width="4"/>
-              <circle cx="610" cy="270" r="8" fill="#d97706"/>
-              <text x="415" y="332" font-family="system-ui" font-weight="900" font-size="12" fill="#92400e">
-                Open DevTools → click Console tab
-              </text>
-            </svg>
-          </div>
+      <!-- CONSOLE OPEN + DIAGRAMS -->
+      <section class="card" id="consoleGuide">
+        <div class="hd">
+          <h2>1️⃣ How to open the Console (with diagrams)</h2>
         </div>
+        <div class="bd">
+          <p class="muted">
+            The Console is where you can see logs, errors, warnings, and also
+            run JavaScript directly.
+          </p>
 
-        <div class="svgCard">
-          <div class="svgTitle">Diagram B — Console workflow</div>
-          <div class="svgWrap">
-            <svg viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Console workflow diagram">
-              <rect x="10" y="10" width="740" height="340" rx="22" fill="#fff" stroke="rgba(31,41,55,.18)"/>
-              <rect x="40" y="50" width="680" height="80" rx="18" fill="rgba(245,158,11,.10)" stroke="rgba(217,119,6,.20)"/>
-              <text x="60" y="95" font-family="system-ui" font-weight="950" font-size="18" fill="#92400e">You type JS here</text>
-              <text x="60" y="120" font-family="ui-monospace" font-weight="900" font-size="14" fill="#1f2937">
-                &gt; console.log("Hello")
-              </text>
+          <div class="grid2">
+            <div class="svgCard">
+              <div class="svgTitle">Diagram A — Where DevTools lives</div>
+              <div class="svgWrap">
+                <svg
+                  viewBox="0 0 760 360"
+                  xmlns="http://www.w3.org/2000/svg"
+                  role="img"
+                  aria-label="DevTools location diagram"
+                >
+                  <defs>
+                    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0" stop-color="#fff7e6" />
+                      <stop offset="1" stop-color="#fff1d6" />
+                    </linearGradient>
+                  </defs>
+                  <rect
+                    x="10"
+                    y="10"
+                    width="740"
+                    height="340"
+                    rx="22"
+                    fill="url(#g1)"
+                    stroke="rgba(31,41,55,.18)"
+                  />
+                  <rect
+                    x="40"
+                    y="52"
+                    width="470"
+                    height="270"
+                    rx="18"
+                    fill="#fff"
+                    stroke="rgba(31,41,55,.18)"
+                  />
+                  <rect
+                    x="530"
+                    y="52"
+                    width="180"
+                    height="270"
+                    rx="18"
+                    fill="#fff"
+                    stroke="rgba(31,41,55,.18)"
+                  />
+                  <rect
+                    x="40"
+                    y="20"
+                    width="670"
+                    height="24"
+                    rx="12"
+                    fill="rgba(245,158,11,.18)"
+                    stroke="rgba(217,119,6,.22)"
+                  />
+                  <text
+                    x="55"
+                    y="37"
+                    font-family="system-ui"
+                    font-weight="900"
+                    font-size="12"
+                    fill="#92400e"
+                  >
+                    Browser Window
+                  </text>
 
-              <rect x="40" y="150" width="680" height="160" rx="18" fill="rgba(17,24,39,.04)" stroke="rgba(31,41,55,.16)"/>
-              <text x="60" y="190" font-family="system-ui" font-weight="900" font-size="16" fill="#1f2937">Console output appears here</text>
-              <text x="60" y="220" font-family="ui-monospace" font-weight="800" font-size="14" fill="#6b7280">
-                Hello
-              </text>
-              <text x="60" y="250" font-family="ui-monospace" font-weight="800" font-size="14" fill="#6b7280">
-                (errors/warnings also show here)
-              </text>
+                  <text
+                    x="60"
+                    y="82"
+                    font-family="system-ui"
+                    font-weight="900"
+                    font-size="14"
+                    fill="#1f2937"
+                  >
+                    Your Website
+                  </text>
+                  <text
+                    x="545"
+                    y="82"
+                    font-family="system-ui"
+                    font-weight="900"
+                    font-size="14"
+                    fill="#1f2937"
+                  >
+                    DevTools
+                  </text>
 
-              <path d="M 540 108 L 610 168" stroke="#d97706" stroke-width="4" />
-              <polygon points="606,168 622,176 612,160" fill="#d97706"/>
-              <text x="485" y="330" font-family="system-ui" font-weight="900" font-size="12" fill="#92400e">
-                Enter → run • Up Arrow → previous command
-              </text>
-            </svg>
+                  <rect
+                    x="545"
+                    y="98"
+                    width="150"
+                    height="28"
+                    rx="12"
+                    fill="rgba(245,158,11,.14)"
+                    stroke="rgba(217,119,6,.22)"
+                  />
+                  <text
+                    x="557"
+                    y="117"
+                    font-family="system-ui"
+                    font-weight="900"
+                    font-size="12"
+                    fill="#92400e"
+                  >
+                    Tabs
+                  </text>
+                  <text
+                    x="557"
+                    y="143"
+                    font-family="system-ui"
+                    font-weight="800"
+                    font-size="12"
+                    fill="#6b7280"
+                  >
+                    Elements
+                  </text>
+                  <text
+                    x="557"
+                    y="163"
+                    font-family="system-ui"
+                    font-weight="800"
+                    font-size="12"
+                    fill="#6b7280"
+                  >
+                    Console ✅
+                  </text>
+                  <text
+                    x="557"
+                    y="183"
+                    font-family="system-ui"
+                    font-weight="800"
+                    font-size="12"
+                    fill="#6b7280"
+                  >
+                    Sources
+                  </text>
+                  <text
+                    x="557"
+                    y="203"
+                    font-family="system-ui"
+                    font-weight="800"
+                    font-size="12"
+                    fill="#6b7280"
+                  >
+                    Network
+                  </text>
+                  <text
+                    x="557"
+                    y="223"
+                    font-family="system-ui"
+                    font-weight="800"
+                    font-size="12"
+                    fill="#6b7280"
+                  >
+                    Application
+                  </text>
+
+                  <path
+                    d="M 430 270 C 500 310, 560 310, 610 270"
+                    fill="none"
+                    stroke="rgba(217,119,6,.7)"
+                    stroke-width="4"
+                  />
+                  <circle cx="610" cy="270" r="8" fill="#d97706" />
+                  <text
+                    x="415"
+                    y="332"
+                    font-family="system-ui"
+                    font-weight="900"
+                    font-size="12"
+                    fill="#92400e"
+                  >
+                    Open DevTools → click Console tab
+                  </text>
+                </svg>
+              </div>
+            </div>
+
+            <div class="svgCard">
+              <div class="svgTitle">Diagram B — Console workflow</div>
+              <div class="svgWrap">
+                <svg
+                  viewBox="0 0 760 360"
+                  xmlns="http://www.w3.org/2000/svg"
+                  role="img"
+                  aria-label="Console workflow diagram"
+                >
+                  <rect
+                    x="10"
+                    y="10"
+                    width="740"
+                    height="340"
+                    rx="22"
+                    fill="#fff"
+                    stroke="rgba(31,41,55,.18)"
+                  />
+                  <rect
+                    x="40"
+                    y="50"
+                    width="680"
+                    height="80"
+                    rx="18"
+                    fill="rgba(245,158,11,.10)"
+                    stroke="rgba(217,119,6,.20)"
+                  />
+                  <text
+                    x="60"
+                    y="95"
+                    font-family="system-ui"
+                    font-weight="950"
+                    font-size="18"
+                    fill="#92400e"
+                  >
+                    You type JS here
+                  </text>
+                  <text
+                    x="60"
+                    y="120"
+                    font-family="ui-monospace"
+                    font-weight="900"
+                    font-size="14"
+                    fill="#1f2937"
+                  >
+                    &gt; console.log("Hello")
+                  </text>
+
+                  <rect
+                    x="40"
+                    y="150"
+                    width="680"
+                    height="160"
+                    rx="18"
+                    fill="rgba(17,24,39,.04)"
+                    stroke="rgba(31,41,55,.16)"
+                  />
+                  <text
+                    x="60"
+                    y="190"
+                    font-family="system-ui"
+                    font-weight="900"
+                    font-size="16"
+                    fill="#1f2937"
+                  >
+                    Console output appears here
+                  </text>
+                  <text
+                    x="60"
+                    y="220"
+                    font-family="ui-monospace"
+                    font-weight="800"
+                    font-size="14"
+                    fill="#6b7280"
+                  >
+                    Hello
+                  </text>
+                  <text
+                    x="60"
+                    y="250"
+                    font-family="ui-monospace"
+                    font-weight="800"
+                    font-size="14"
+                    fill="#6b7280"
+                  >
+                    (errors/warnings also show here)
+                  </text>
+
+                  <path
+                    d="M 540 108 L 610 168"
+                    stroke="#d97706"
+                    stroke-width="4"
+                  />
+                  <polygon points="606,168 622,176 612,160" fill="#d97706" />
+                  <text
+                    x="485"
+                    y="330"
+                    font-family="system-ui"
+                    font-weight="900"
+                    font-size="12"
+                    fill="#92400e"
+                  >
+                    Enter → run • Up Arrow → previous command
+                  </text>
+                </svg>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <div class="task">
-        Task: Open DevTools → Console, then type <span class="kbd">2+2</span> and press Enter.
-        You should see <b>4</b>.
-      </div>
+          <div class="task">
+            Task: Open DevTools → Console, then type
+            <span class="kbd">2+2</span> and press Enter. You should see
+            <b>4</b>.
+          </div>
 
-      <p class="muted" style="margin-top:14px"><b>How to open DevTools / Console (simple steps)</b></p>
-      <ul>
-        <li><b>Keyboard:</b> <span class="kbd">Ctrl</span> + <span class="kbd">Shift</span> + <span class="kbd">I</span> (or <span class="kbd">F12</span>)</li>
-        <li><b>Right click:</b> on page → <b>Inspect</b></li>
-        <li>Then click the <b>Console</b> tab</li>
-      </ul>
+          <p class="muted" style="margin-top: 14px">
+            <b>How to open DevTools / Console (simple steps)</b>
+          </p>
+          <ul>
+            <li>
+              <b>Keyboard:</b> <span class="kbd">Ctrl</span> +
+              <span class="kbd">Shift</span> + <span class="kbd">I</span> (or
+              <span class="kbd">F12</span>)
+            </li>
+            <li><b>Right click:</b> on page → <b>Inspect</b></li>
+            <li>Then click the <b>Console</b> tab</li>
+          </ul>
 
-      <p class="muted" style="margin-top:14px"><b>What do people paste in the console?</b></p>
-      <p>
-        The console is like a quick “scratchpad” where you paste short scripts to inspect the page, test functions,
-        fetch data, or debug problems.
-      </p>
+          <p class="muted" style="margin-top: 14px">
+            <b>What do people paste in the console?</b>
+          </p>
+          <p>
+            The console is like a quick “scratchpad” where you paste short
+            scripts to inspect the page, test functions, fetch data, or debug
+            problems.
+          </p>
 
-      <div class="grid2">
-        <div>
-          <p class="muted"><b>Paste Example 1 — Inspect the page</b></p>
-          <pre><code>// 1) Read the page title
+          <div class="grid2">
+            <div>
+              <p class="muted"><b>Paste Example 1 — Inspect the page</b></p>
+              <pre><code>// 1) Read the page title
 document.title
 
 // 2) Get the first H1 text
@@ -298,204 +674,268 @@ document.querySelector("h1")?.textContent
 
 // 3) Count all links on the page
 document.querySelectorAll("a").length</code></pre>
-        </div>
+            </div>
 
-        <div>
-          <p class="muted"><b>Paste Example 2 — Fix/verify selectors</b></p>
-          <pre><code>// If a selector returns null, you found the bug
+            <div>
+              <p class="muted"><b>Paste Example 2 — Fix/verify selectors</b></p>
+              <pre><code>// If a selector returns null, you found the bug
 const btn = document.querySelector("#start");
 btn  // prints null OR the element
 
 // If null, try searching by tag/text/class
 document.querySelector("button")
 document.querySelector(".start")</code></pre>
-        </div>
+            </div>
 
-        <div>
-          <p class="muted"><b>Paste Example 3 — Print arrays nicely</b></p>
-          <pre><code>const users = [
+            <div>
+              <p class="muted"><b>Paste Example 3 — Print arrays nicely</b></p>
+              <pre><code>const users = [
   {id:1, name:"Asha", city:"Varanasi"},
   {id:2, name:"Ravi", city:"Delhi"},
   {id:3, name:"Meera", city:"Pune"},
 ];
 console.table(users);</code></pre>
-        </div>
+            </div>
 
-        <div>
-          <p class="muted"><b>Paste Example 4 — Quick micro-tests</b></p>
-          <pre><code>function clamp(n, min, max){
-  return Math.max(min, Math.min(max, n));
+            <div>
+              <p class="muted"><b>Paste Example 4 — Quick micro-tests</b></p>
+              <pre><code>function singleDigit(n){
+                result=((n>=0) && (n <=9));
+                <!-- print(result); -->
+  return result;
 }
-console.assert(clamp(5,0,10) === 5, "clamp(5) failed");
-console.assert(clamp(-2,0,10) === 0, "clamp(-2) failed");
-console.assert(clamp(99,0,10) === 10, "clamp(99) failed");</code></pre>
-        </div>
+console.assert(singleDigit(5) === true, "singleDigit(5) passed");
+console.assert(singleDigit(-2) === true, "singleDigit(-2) failed");
+console.assert(singleDigit(99) === true, "singleDigit(99) failed");
+</code></pre>
+            </div>
 
-        <div>
-          <p class="muted"><b>Paste Example 5 — Test fetch quickly</b></p>
-          <pre><code>fetch("https://jsonplaceholder.typicode.com/todos/1")
+            <div>
+              <p class="muted"><b>Paste Example 5 — Test fetch quickly</b></p>
+              <pre><code>fetch("https://programmer-s-picnic.github.io/json-images/books.json")
   .then(r => r.json())
   .then(data => console.log("Fetched:", data))
   .catch(err => console.error("Fetch error:", err));</code></pre>
-          <div class="smallNote">Then verify it in DevTools → Network → Fetch/XHR.</div>
-        </div>
+              <div class="smallNote">
+                Then verify it in DevTools → Network → Fetch/XHR.
+              </div>
+            </div>
 
-        <div>
-          <p class="muted"><b>Paste Example 6 — Store & read localStorage</b></p>
-          <pre><code>localStorage.setItem("pp_debug", JSON.stringify({
+            <div>
+              <p class="muted">
+                <b>Paste Example 6 — Store & read localStorage</b>
+              </p>
+              <pre><code>localStorage.setItem("pp_debug", JSON.stringify({
   time: new Date().toISOString(),
   note: "Hello from console!"
 }));
 
 JSON.parse(localStorage.getItem("pp_debug"));</code></pre>
-        </div>
-      </div>
-
-      <div class="task">
-        Task: Copy/paste “Example 3” into the Console and press Enter.
-        Then change the array and run again.
-      </div>
-    </div>
-  </section>
-
-  <!-- TOPICS QUICK (still present) -->
-  <section class="card">
-    <div class="hd"><h2>2️⃣ Topics for Day 1 (what you must learn)</h2></div>
-    <div class="bd">
-      <ul>
-        <li><b>Console basics:</b> log, warn, error, table, assert</li>
-        <li><b>Error reading:</b> ReferenceError, TypeError, SyntaxError</li>
-        <li><b>Breakpoints:</b> Sources tab + debugger statement</li>
-        <li><b>Network testing:</b> verify API calls</li>
-        <li><b>Storage:</b> localStorage testing</li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- PRACTICE TASKS -->
-  <section class="card">
-    <div class="hd"><h2>3️⃣ Guided tasks (do these today)</h2></div>
-    <div class="bd">
-      <div class="task">Task A: In Console, run <span class="kbd">2+2</span>, <span class="kbd">"Hi".toUpperCase()</span>, and <span class="kbd">Math.random()</span>.</div>
-      <div class="task">Task B: Create a TypeError by calling <span class="kbd">null.toString()</span>. Explain why it fails.</div>
-      <div class="task">Task C: In your editor code, add <span class="kbd">debugger;</span> inside a function and step through.</div>
-      <div class="task">Task D: Make a fetch request and confirm the status code in Network tab.</div>
-    </div>
-  </section>
-
-  <!-- EDITOR TOGGLE -->
-  <section class="card" id="editors">
-    <div class="hd"><h2>🧪 Practice Editors (Toggle)</h2></div>
-    <div class="bd">
-      <p class="muted">Toggle between editors depending on the task.</p>
-
-      <div class="toggleBar">
-        <div class="row">
-          <span class="pill" id="activeLabel">🧩 HTML Preview Editor</span>
-          <span class="muted" id="activeHint">Build a mini page and test interactions fast.</span>
-        </div>
-
-        <div class="row">
-          <div class="seg" role="tablist" aria-label="Editor toggle">
-            <button id="tabHtml" class="active" type="button" role="tab" aria-selected="true">🧩 HTML Preview</button>
-            <button id="tabJs" type="button" role="tab" aria-selected="false">🧪 JavaScript</button>
+            </div>
           </div>
-          <a class="btn" id="btnOpenNew" href="https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html" target="_blank" rel="noopener">Open ↗</a>
-        </div>
-      </div>
 
-      <!-- HTML Preview Editor -->
-      <div class="embedWrap" id="panelHtml" role="tabpanel" aria-label="HTML Preview Editor">
-        <div class="embedTop">
-          <div>
-            <div class="pill">🧩 HTML Preview Editor</div>
-            <p class="sub">Perfect for quick UI + DOM experiments.</p>
+          <div class="task">
+            Task: Copy/paste “Example 3” into the Console and press Enter. Then
+            change the array and run again.
           </div>
         </div>
-        <iframe
-          title="Programmer’s Picnic HTML Preview Editor"
-          src="https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html"
-          loading="eager"
-          allow="clipboard-read; clipboard-write; fullscreen"
-          allowfullscreen
-        ></iframe>
-      </div>
+      </section>
 
-      <!-- JavaScript Editor -->
-      <div class="embedWrap hidden" id="panelJs" role="tabpanel" aria-label="JavaScript Editor">
-        <div class="embedTop">
-          <div>
-            <div class="pill">🧪 JavaScript Editor</div>
-            <p class="sub">Practice console logs, debugger, functions, and micro-tests.</p>
+      <!-- TOPICS QUICK (still present) -->
+      <section class="card">
+        <div class="hd"><h2>2️⃣ Topics for Day 1 (what you must learn)</h2></div>
+        <div class="bd">
+          <ul>
+            <li><b>Console basics:</b> log, warn, error, table, assert</li>
+            <li>
+              <b>Error reading:</b> ReferenceError, TypeError, SyntaxError
+            </li>
+            <li><b>Breakpoints:</b> Sources tab + debugger statement</li>
+            <li><b>Network testing:</b> verify API calls</li>
+            <li><b>Storage:</b> localStorage testing</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- PRACTICE TASKS -->
+      <section class="card">
+        <div class="hd"><h2>3️⃣ Guided tasks (do these today)</h2></div>
+        <div class="bd">
+          <div class="task">
+            Task A: In Console, run <span class="kbd">2+2</span>,
+            <span class="kbd">"Hi".toUpperCase()</span>, and
+            <span class="kbd">Math.random()</span>.
+          </div>
+          <div class="task">
+            Task B: Create a TypeError by calling
+            <span class="kbd">null.toString()</span>. Explain why it fails.
+          </div>
+          <div class="task">
+            Task C: In your editor code, add
+            <span class="kbd">debugger;</span> inside a function and step
+            through.
+          </div>
+          <div class="task">
+            Task D: Make a fetch request and confirm the status code in Network
+            tab.
           </div>
         </div>
-        <iframe
-          title="Programmer’s Picnic JavaScript Editor"
-          src="https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/"
-          loading="eager"
-          allow="clipboard-read; clipboard-write; fullscreen"
-          allowfullscreen
-        ></iframe>
-      </div>
+      </section>
 
-      <div class="smallNote">
-        Tip: Use Live Server / http server if fetch/local JSON doesn’t load in file:// mode.
-      </div>
+      <!-- EDITOR TOGGLE -->
+      <section class="card" id="editors">
+        <div class="hd"><h2>🧪 Practice Editors (Toggle)</h2></div>
+        <div class="bd">
+          <p class="muted">Toggle between editors depending on the task.</p>
+
+          <div class="toggleBar">
+            <div class="row">
+              <span class="pill" id="activeLabel">🧩 HTML Preview Editor</span>
+              <span class="muted" id="activeHint"
+                >Build a mini page and test interactions fast.</span
+              >
+            </div>
+
+            <div class="row">
+              <div class="seg" role="tablist" aria-label="Editor toggle">
+                <button
+                  id="tabHtml"
+                  class="active"
+                  type="button"
+                  role="tab"
+                  aria-selected="true"
+                >
+                  🧩 HTML Preview
+                </button>
+                <button
+                  id="tabJs"
+                  type="button"
+                  role="tab"
+                  aria-selected="false"
+                >
+                  🧪 JavaScript
+                </button>
+              </div>
+              <a
+                class="btn"
+                id="btnOpenNew"
+                href="https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html"
+                target="_blank"
+                rel="noopener"
+                >Open ↗</a
+              >
+            </div>
+          </div>
+
+          <!-- HTML Preview Editor -->
+          <div
+            class="embedWrap"
+            id="panelHtml"
+            role="tabpanel"
+            aria-label="HTML Preview Editor"
+          >
+            <div class="embedTop">
+              <div>
+                <div class="pill">🧩 HTML Preview Editor</div>
+                <p class="sub">Perfect for quick UI + DOM experiments.</p>
+              </div>
+            </div>
+            <iframe
+              title="Programmer’s Picnic HTML Preview Editor"
+              src="https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html"
+              loading="eager"
+              allow="clipboard-read; clipboard-write; fullscreen"
+              allowfullscreen
+            ></iframe>
+          </div>
+
+          <!-- JavaScript Editor -->
+          <div
+            class="embedWrap hidden"
+            id="panelJs"
+            role="tabpanel"
+            aria-label="JavaScript Editor"
+          >
+            <div class="embedTop">
+              <div>
+                <div class="pill">🧪 JavaScript Editor</div>
+                <p class="sub">
+                  Practice console logs, debugger, functions, and micro-tests.
+                </p>
+              </div>
+            </div>
+            <iframe
+              title="Programmer’s Picnic JavaScript Editor"
+              src="https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/"
+              loading="eager"
+              allow="clipboard-read; clipboard-write; fullscreen"
+              allowfullscreen
+            ></iframe>
+          </div>
+
+          <div class="smallNote">
+            Tip: Use Live Server / http server if fetch/local JSON doesn’t load
+            in file:// mode.
+          </div>
+        </div>
+      </section>
     </div>
-  </section>
 
-</div>
+    <script>
+      const $ = (id) => document.getElementById(id);
 
-<script>
-const $ = (id) => document.getElementById(id);
+      $("btnPrint").addEventListener("click", () => window.print());
+      $("btnJumpConsole").addEventListener("click", () => {
+        document
+          .getElementById("consoleGuide")
+          .scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      $("btnJumpEditors").addEventListener("click", () => {
+        document
+          .getElementById("editors")
+          .scrollIntoView({ behavior: "smooth", block: "start" });
+      });
 
-$("btnPrint").addEventListener("click", () => window.print());
-$("btnJumpConsole").addEventListener("click", () => {
-  document.getElementById("consoleGuide").scrollIntoView({behavior:"smooth", block:"start"});
-});
-$("btnJumpEditors").addEventListener("click", () => {
-  document.getElementById("editors").scrollIntoView({behavior:"smooth", block:"start"});
-});
+      const tabs = {
+        html: {
+          tab: $("tabHtml"),
+          panel: $("panelHtml"),
+          label: "🧩 HTML Preview Editor",
+          hint: "Build a mini page and test interactions fast.",
+          url: "https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html",
+        },
+        js: {
+          tab: $("tabJs"),
+          panel: $("panelJs"),
+          label: "🧪 JavaScript Editor",
+          hint: "Practice console logs, debugger, functions, and micro-tests.",
+          url: "https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/",
+        },
+      };
 
-const tabs = {
-  html: {
-    tab: $("tabHtml"),
-    panel: $("panelHtml"),
-    label: "🧩 HTML Preview Editor",
-    hint: "Build a mini page and test interactions fast.",
-    url: "https://www.learnwithchampak.live/2026/01/programmers-picnic-html-preview.html"
-  },
-  js: {
-    tab: $("tabJs"),
-    panel: $("panelJs"),
-    label: "🧪 JavaScript Editor",
-    hint: "Practice console logs, debugger, functions, and micro-tests.",
-    url: "https://programmer-s-picnic.github.io/lesson-viewer/java-script/editor/"
-  }
-};
+      function setActive(key) {
+        const a = tabs[key];
+        const b = key === "html" ? tabs.js : tabs.html;
 
-function setActive(key){
-  const a = tabs[key];
-  const b = key === "html" ? tabs.js : tabs.html;
+        a.tab.classList.add("active");
+        a.tab.setAttribute("aria-selected", "true");
+        a.panel.classList.remove("hidden");
 
-  a.tab.classList.add("active");
-  a.tab.setAttribute("aria-selected","true");
-  a.panel.classList.remove("hidden");
+        b.tab.classList.remove("active");
+        b.tab.setAttribute("aria-selected", "false");
+        b.panel.classList.add("hidden");
 
-  b.tab.classList.remove("active");
-  b.tab.setAttribute("aria-selected","false");
-  b.panel.classList.add("hidden");
+        $("activeLabel").textContent = a.label;
+        $("activeHint").textContent = a.hint;
+        $("btnOpenNew").href = a.url;
 
-  $("activeLabel").textContent = a.label;
-  $("activeHint").textContent = a.hint;
-  $("btnOpenNew").href = a.url;
-
-  localStorage.setItem("pp_day1_editor", key);
-}
-tabs.html.tab.addEventListener("click", () => setActive("html"));
-tabs.js.tab.addEventListener("click", () => setActive("js"));
-setActive(localStorage.getItem("pp_day1_editor")==="js" ? "js" : "html");
-</script>
-
-</body>
+        localStorage.setItem("pp_day1_editor", key);
+      }
+      tabs.html.tab.addEventListener("click", () => setActive("html"));
+      tabs.js.tab.addEventListener("click", () => setActive("js"));
+      setActive(
+        localStorage.getItem("pp_day1_editor") === "js" ? "js" : "html",
+      );
+    </script>
+  </body>
 </html>
